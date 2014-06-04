@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.shopping.model.impl;
 
 import com.liferay.portal.kernel.exception.SystemException;
+
 import com.liferay.shopping.model.ShoppingCart;
 import com.liferay.shopping.service.ShoppingCartLocalServiceUtil;
 
@@ -32,12 +33,17 @@ import com.liferay.shopping.service.ShoppingCartLocalServiceUtil;
  */
 public abstract class ShoppingCartBaseImpl extends ShoppingCartModelImpl
 	implements ShoppingCart {
-	/**
+	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify or reference this class directly. All methods that expect a shopping cart model instance should use the {@link ShoppingCart} interface instead.
 	 */
 	public void persist() throws SystemException {
-		ShoppingCartLocalServiceUtil.updateShoppingCart(this);
+		if (this.isNew()) {
+			ShoppingCartLocalServiceUtil.addShoppingCart(this);
+		}
+		else {
+			ShoppingCartLocalServiceUtil.updateShoppingCart(this);
+		}
 	}
 }

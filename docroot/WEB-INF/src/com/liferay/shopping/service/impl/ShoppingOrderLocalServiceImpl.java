@@ -650,7 +650,7 @@ public class ShoppingOrderLocalServiceImpl
 			}, new String[] {
 				fromAddress, fromName, billingAddress, currency.getSymbol(),
 				order.getNumber(), shippingAddress, String.valueOf(total),
-				company.getVirtualHost(), portletName, toAddress, toName
+				company.getVirtualHostname(), portletName, toAddress, toName
 			});
 
 		body =
@@ -663,7 +663,7 @@ public class ShoppingOrderLocalServiceImpl
 			}, new String[] {
 				fromAddress, fromName, billingAddress, currency.getSymbol(),
 				order.getNumber(), shippingAddress, String.valueOf(total),
-				company.getVirtualHost(), portletName, toAddress, toName
+				company.getVirtualHostname(), portletName, toAddress, toName
 			});
 
 		InternetAddress from = new InternetAddress(fromAddress, fromName);
@@ -784,7 +784,7 @@ public class ShoppingOrderLocalServiceImpl
 			else if (Validator.isNull(ccType)) {
 				throw new CCTypeException();
 			}
-			else if (!CreditCard.isValid(ccNumber, ccType)) {
+			else if (!CreditCard.isValidNumber(ccNumber, ccType)) {
 				throw new CCNumberException();
 			}
 			else if (!CalendarUtil.isFuture(ccExpMonth, ccExpYear)) {

@@ -59,18 +59,14 @@ public class ShoppingCartLocalServiceImpl
 	}
 
 	@Override
-	public void deleteShoppingCart(long cartId)
+	public ShoppingCart deleteShoppingCart(long cartId)
 		throws PortalException,	SystemException {
 
 		ShoppingCart cart = shoppingCartPersistence.findByPrimaryKey(
 			cartId);
 
 		deleteShoppingCart(cart);
-	}
-
-	@Override
-	public void deleteShoppingCart(ShoppingCart cart) throws SystemException {
-		shoppingCartPersistence.remove(cart);
+        return cart;
 	}
 
 	public void deleteUserCarts(long userId) throws SystemException {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,9 +15,11 @@
 package com.liferay.shopping.model.impl;
 
 import com.liferay.portal.kernel.util.StringBundler;
-// import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.CacheModel;
 
 import com.liferay.shopping.model.ShoppingItemPrice;
+
+import java.io.Serializable;
 
 /**
  * The cache model class for representing ShoppingItemPrice in entity cache.
@@ -26,7 +28,8 @@ import com.liferay.shopping.model.ShoppingItemPrice;
  * @see ShoppingItemPrice
  * @generated
  */
-public class ShoppingItemPriceCacheModel implements CacheModel<ShoppingItemPrice> {
+public class ShoppingItemPriceCacheModel implements CacheModel<ShoppingItemPrice>,
+	Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(21);
@@ -70,7 +73,7 @@ public class ShoppingItemPriceCacheModel implements CacheModel<ShoppingItemPrice
 		shoppingItemPriceImpl.setUseShippingFormula(useShippingFormula);
 		shoppingItemPriceImpl.setStatus(status);
 
-		// shoppingItemPriceImpl.resetOriginalValues();
+		shoppingItemPriceImpl.resetOriginalValues();
 
 		return shoppingItemPriceImpl;
 	}

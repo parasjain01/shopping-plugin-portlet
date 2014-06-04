@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,9 +16,11 @@ package com.liferay.shopping.model.impl;
 
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-// import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.CacheModel;
 
 import com.liferay.shopping.model.ShoppingOrderItem;
+
+import java.io.Serializable;
 
 import java.util.Date;
 
@@ -29,7 +31,8 @@ import java.util.Date;
  * @see ShoppingOrderItem
  * @generated
  */
-public class ShoppingOrderItemCacheModel implements CacheModel<ShoppingOrderItem> {
+public class ShoppingOrderItemCacheModel implements CacheModel<ShoppingOrderItem>,
+	Serializable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(21);
@@ -110,7 +113,7 @@ public class ShoppingOrderItemCacheModel implements CacheModel<ShoppingOrderItem
 			shoppingOrderItemImpl.setShippedDate(new Date(shippedDate));
 		}
 
-		// shoppingOrderItemImpl.resetOriginalValues();
+		shoppingOrderItemImpl.resetOriginalValues();
 
 		return shoppingOrderItemImpl;
 	}

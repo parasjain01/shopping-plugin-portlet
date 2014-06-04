@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
 	<persistence-unit-metadata>
@@ -24,7 +24,9 @@
 			<basic name="couponCodes" />
 			<basic name="altShipping" />
 			<basic name="insure" />
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
@@ -44,7 +46,9 @@
 			<basic name="parentCategoryId" />
 			<basic name="name" />
 			<basic name="description" />
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
@@ -80,7 +84,9 @@
 			<basic name="minOrder" />
 			<basic name="discount" />
 			<basic name="discountType" />
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
@@ -130,7 +136,9 @@
 			<basic name="largeImage" />
 			<basic name="largeImageId" />
 			<basic name="largeImageURL" />
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
@@ -143,7 +151,9 @@
 				<column name="VALUES_" />
 			</basic>
 			<basic name="description" />
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 		</attributes>
 	</mapped-superclass>
 	<mapped-superclass class="com.liferay.shopping.model.impl.ShoppingItemPriceModelImpl">
@@ -158,7 +168,9 @@
 			<basic name="shipping" />
 			<basic name="useShippingFormula" />
 			<basic name="status" />
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 		</attributes>
 	</mapped-superclass>
 	<mapped-superclass class="com.liferay.shopping.model.impl.ShoppingOrderModelImpl">
@@ -220,7 +232,9 @@
 			<basic name="ppPayerEmail" />
 			<basic name="sendOrderEmail" />
 			<basic name="sendShippingEmail" />
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 			<transient name="userUuid" />
 		</attributes>
 	</mapped-superclass>
@@ -238,7 +252,9 @@
 			<basic name="shippedDate">
 				<temporal>TIMESTAMP</temporal>
 			</basic>
+			<transient name="modelAttributes" />
 			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
 		</attributes>
 	</mapped-superclass>
 	<entity class="com.liferay.shopping.model.impl.ShoppingCartImpl" name="ShoppingCart">

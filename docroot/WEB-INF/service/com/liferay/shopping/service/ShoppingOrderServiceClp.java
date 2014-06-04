@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,16 +14,111 @@
 
 package com.liferay.shopping.service;
 
-import com.liferay.portal.kernel.util.ClassLoaderProxy;
-import com.liferay.portal.kernel.util.MethodHandler;
-import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.service.InvokableService;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class ShoppingOrderServiceClp implements ShoppingOrderService {
-	public ShoppingOrderServiceClp(ClassLoaderProxy classLoaderProxy) {
-		_classLoaderProxy = classLoaderProxy;
+	public ShoppingOrderServiceClp(InvokableService invokableService) {
+		_invokableService = invokableService;
+
+		_methodName0 = "getBeanIdentifier";
+
+		_methodParameterTypes0 = new String[] {  };
+
+		_methodName1 = "setBeanIdentifier";
+
+		_methodParameterTypes1 = new String[] { "java.lang.String" };
+
+		_methodName3 = "completeOrder";
+
+		_methodParameterTypes3 = new String[] {
+				"long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "double", "java.lang.String",
+				"java.lang.String"
+			};
+
+		_methodName4 = "deleteOrder";
+
+		_methodParameterTypes4 = new String[] { "long", "long" };
+
+		_methodName5 = "getOrder";
+
+		_methodParameterTypes5 = new String[] { "long", "long" };
+
+		_methodName6 = "sendEmail";
+
+		_methodParameterTypes6 = new String[] { "long", "long", "java.lang.String" };
+
+		_methodName7 = "updateOrder";
+
+		_methodParameterTypes7 = new String[] {
+				"long", "long", "java.lang.String", "java.lang.String", "double",
+				"java.lang.String", "java.lang.String"
+			};
+
+		_methodName8 = "updateOrder";
+
+		_methodParameterTypes8 = new String[] {
+				"long", "long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "boolean",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String", "int", "int", "java.lang.String",
+				"java.lang.String"
+			};
+	}
+
+	public java.lang.String getBeanIdentifier() {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableService.invokeMethod(_methodName0,
+					_methodParameterTypes0, new Object[] {  });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.lang.String)ClpSerializer.translateOutput(returnObj);
+	}
+
+	public void setBeanIdentifier(java.lang.String beanIdentifier) {
+		try {
+			_invokableService.invokeMethod(_methodName1,
+				_methodParameterTypes1,
+				new Object[] { ClpSerializer.translateInput(beanIdentifier) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+	}
+
+	public java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		throw new UnsupportedOperationException();
 	}
 
 	public void completeOrder(long groupId, java.lang.String number,
@@ -32,14 +127,28 @@ public class ShoppingOrderServiceClp implements ShoppingOrderService {
 		java.lang.String ppPayerEmail)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_completeOrderMethodKey0,
-				groupId, number, ppTxnId, ppPaymentStatus, ppPaymentGross,
-				ppReceiverEmail, ppPayerEmail);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableService.invokeMethod(_methodName3,
+				_methodParameterTypes3,
+				new Object[] {
+					groupId,
+					
+				ClpSerializer.translateInput(number),
+					
+				ClpSerializer.translateInput(ppTxnId),
+					
+				ClpSerializer.translateInput(ppPaymentStatus),
+					
+				ppPaymentGross,
+					
+				ClpSerializer.translateInput(ppReceiverEmail),
+					
+				ClpSerializer.translateInput(ppPayerEmail)
+				});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -61,13 +170,13 @@ public class ShoppingOrderServiceClp implements ShoppingOrderService {
 	public void deleteOrder(long groupId, long orderId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_deleteOrderMethodKey1,
-				groupId, orderId);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableService.invokeMethod(_methodName4,
+				_methodParameterTypes4, new Object[] { groupId, orderId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -92,13 +201,13 @@ public class ShoppingOrderServiceClp implements ShoppingOrderService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getOrderMethodKey2,
-				groupId, orderId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableService.invokeMethod(_methodName5,
+					_methodParameterTypes5, new Object[] { groupId, orderId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -122,13 +231,20 @@ public class ShoppingOrderServiceClp implements ShoppingOrderService {
 	public void sendEmail(long groupId, long orderId, java.lang.String emailType)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_sendEmailMethodKey3,
-				groupId, orderId, emailType);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableService.invokeMethod(_methodName6,
+				_methodParameterTypes6,
+				new Object[] {
+					groupId,
+					
+				orderId,
+					
+				ClpSerializer.translateInput(emailType)
+				});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -155,14 +271,28 @@ public class ShoppingOrderServiceClp implements ShoppingOrderService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_updateOrderMethodKey4,
-				groupId, orderId, ppTxnId, ppPaymentStatus, ppPaymentGross,
-				ppReceiverEmail, ppPayerEmail);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableService.invokeMethod(_methodName7,
+					_methodParameterTypes7,
+					new Object[] {
+						groupId,
+						
+					orderId,
+						
+					ClpSerializer.translateInput(ppTxnId),
+						
+					ClpSerializer.translateInput(ppPaymentStatus),
+						
+					ppPaymentGross,
+						
+					ClpSerializer.translateInput(ppReceiverEmail),
+						
+					ClpSerializer.translateInput(ppPayerEmail)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -202,20 +332,74 @@ public class ShoppingOrderServiceClp implements ShoppingOrderService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_updateOrderMethodKey5,
-				groupId, orderId, billingFirstName, billingLastName,
-				billingEmailAddress, billingCompany, billingStreet,
-				billingCity, billingState, billingZip, billingCountry,
-				billingPhone, shipToBilling, shippingFirstName,
-				shippingLastName, shippingEmailAddress, shippingCompany,
-				shippingStreet, shippingCity, shippingState, shippingZip,
-				shippingCountry, shippingPhone, ccName, ccType, ccNumber,
-				ccExpMonth, ccExpYear, ccVerNumber, comments);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableService.invokeMethod(_methodName8,
+					_methodParameterTypes8,
+					new Object[] {
+						groupId,
+						
+					orderId,
+						
+					ClpSerializer.translateInput(billingFirstName),
+						
+					ClpSerializer.translateInput(billingLastName),
+						
+					ClpSerializer.translateInput(billingEmailAddress),
+						
+					ClpSerializer.translateInput(billingCompany),
+						
+					ClpSerializer.translateInput(billingStreet),
+						
+					ClpSerializer.translateInput(billingCity),
+						
+					ClpSerializer.translateInput(billingState),
+						
+					ClpSerializer.translateInput(billingZip),
+						
+					ClpSerializer.translateInput(billingCountry),
+						
+					ClpSerializer.translateInput(billingPhone),
+						
+					shipToBilling,
+						
+					ClpSerializer.translateInput(shippingFirstName),
+						
+					ClpSerializer.translateInput(shippingLastName),
+						
+					ClpSerializer.translateInput(shippingEmailAddress),
+						
+					ClpSerializer.translateInput(shippingCompany),
+						
+					ClpSerializer.translateInput(shippingStreet),
+						
+					ClpSerializer.translateInput(shippingCity),
+						
+					ClpSerializer.translateInput(shippingState),
+						
+					ClpSerializer.translateInput(shippingZip),
+						
+					ClpSerializer.translateInput(shippingCountry),
+						
+					ClpSerializer.translateInput(shippingPhone),
+						
+					ClpSerializer.translateInput(ccName),
+						
+					ClpSerializer.translateInput(ccType),
+						
+					ClpSerializer.translateInput(ccNumber),
+						
+					ccExpMonth,
+						
+					ccExpYear,
+						
+					ClpSerializer.translateInput(ccVerNumber),
+						
+					ClpSerializer.translateInput(comments)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -236,37 +420,21 @@ public class ShoppingOrderServiceClp implements ShoppingOrderService {
 		return (com.liferay.shopping.model.ShoppingOrder)ClpSerializer.translateOutput(returnObj);
 	}
 
-	public ClassLoaderProxy getClassLoaderProxy() {
-		return _classLoaderProxy;
-	}
-
-	private ClassLoaderProxy _classLoaderProxy;
-	private MethodKey _completeOrderMethodKey0 = new MethodKey(_classLoaderProxy.getClassName(),
-			"completeOrder", long.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class, double.class,
-			java.lang.String.class, java.lang.String.class);
-	private MethodKey _deleteOrderMethodKey1 = new MethodKey(_classLoaderProxy.getClassName(),
-			"deleteOrder", long.class, long.class);
-	private MethodKey _getOrderMethodKey2 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getOrder", long.class, long.class);
-	private MethodKey _sendEmailMethodKey3 = new MethodKey(_classLoaderProxy.getClassName(),
-			"sendEmail", long.class, long.class, java.lang.String.class);
-	private MethodKey _updateOrderMethodKey4 = new MethodKey(_classLoaderProxy.getClassName(),
-			"updateOrder", long.class, long.class, java.lang.String.class,
-			java.lang.String.class, double.class, java.lang.String.class,
-			java.lang.String.class);
-	private MethodKey _updateOrderMethodKey5 = new MethodKey(_classLoaderProxy.getClassName(),
-			"updateOrder", long.class, long.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, boolean.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class, int.class,
-			int.class, java.lang.String.class, java.lang.String.class);
+	private InvokableService _invokableService;
+	private String _methodName0;
+	private String[] _methodParameterTypes0;
+	private String _methodName1;
+	private String[] _methodParameterTypes1;
+	private String _methodName3;
+	private String[] _methodParameterTypes3;
+	private String _methodName4;
+	private String[] _methodParameterTypes4;
+	private String _methodName5;
+	private String[] _methodParameterTypes5;
+	private String _methodName6;
+	private String[] _methodParameterTypes6;
+	private String _methodName7;
+	private String[] _methodParameterTypes7;
+	private String _methodName8;
+	private String[] _methodParameterTypes8;
 }

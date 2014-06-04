@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.shopping.service.persistence;
 
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
+import com.liferay.portal.kernel.util.ReferenceRegistry;
 
 /**
  * @author Brian Wing Shun Chan
@@ -40,8 +41,11 @@ public class ShoppingCouponFinderUtil {
 
 	public static ShoppingCouponFinder getFinder() {
 		if (_finder == null) {
-			_finder = (ShoppingCouponFinder)PortletBeanLocatorUtil.locate(com.liferay.shopping.service.ClpSerializer.SERVLET_CONTEXT_NAME,
+			_finder = (ShoppingCouponFinder)PortletBeanLocatorUtil.locate(com.liferay.shopping.service.ClpSerializer.getServletContextName(),
 					ShoppingCouponFinder.class.getName());
+
+			ReferenceRegistry.registerReference(ShoppingCouponFinderUtil.class,
+				"_finder");
 		}
 
 		return _finder;
@@ -49,6 +53,9 @@ public class ShoppingCouponFinderUtil {
 
 	public void setFinder(ShoppingCouponFinder finder) {
 		_finder = finder;
+
+		ReferenceRegistry.registerReference(ShoppingCouponFinderUtil.class,
+			"_finder");
 	}
 
 	private static ShoppingCouponFinder _finder;

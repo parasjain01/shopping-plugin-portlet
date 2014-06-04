@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,10 +14,8 @@
 
 package com.liferay.shopping.service.messaging;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageListener;
 
 import com.liferay.shopping.service.ClpSerializer;
 import com.liferay.shopping.service.ShoppingCartLocalServiceUtil;
@@ -36,24 +34,18 @@ import com.liferay.shopping.service.ShoppingOrderServiceUtil;
 /**
  * @author Brian Wing Shun Chan
  */
-public class ClpMessageListener implements MessageListener {
-	public static final String SERVLET_CONTEXT_NAME = ClpSerializer.SERVLET_CONTEXT_NAME;
-
-	public void receive(Message message) {
-		try {
-			doReceive(message);
-		}
-		catch (Exception e) {
-			_log.error("Unable to process message " + message, e);
-		}
+public class ClpMessageListener extends BaseMessageListener {
+	public static String getServletContextName() {
+		return ClpSerializer.getServletContextName();
 	}
 
+	@Override
 	protected void doReceive(Message message) throws Exception {
 		String command = message.getString("command");
 		String servletContextName = message.getString("servletContextName");
 
 		if (command.equals("undeploy") &&
-				servletContextName.equals(SERVLET_CONTEXT_NAME)) {
+				servletContextName.equals(getServletContextName())) {
 			ShoppingCartLocalServiceUtil.clearService();
 
 			ShoppingCategoryLocalServiceUtil.clearService();
@@ -75,6 +67,4 @@ public class ClpMessageListener implements MessageListener {
 			ShoppingOrderItemLocalServiceUtil.clearService();
 		}
 	}
-
-	private static Log _log = LogFactoryUtil.getLog(ClpMessageListener.class);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.shopping.service;
 
+import com.liferay.portal.service.ServiceWrapper;
+
 /**
  * <p>
  * This class is a wrapper for {@link ShoppingOrderService}.
@@ -23,10 +25,36 @@ package com.liferay.shopping.service;
  * @see       ShoppingOrderService
  * @generated
  */
-public class ShoppingOrderServiceWrapper implements ShoppingOrderService {
+public class ShoppingOrderServiceWrapper implements ShoppingOrderService,
+	ServiceWrapper<ShoppingOrderService> {
 	public ShoppingOrderServiceWrapper(
 		ShoppingOrderService shoppingOrderService) {
 		_shoppingOrderService = shoppingOrderService;
+	}
+
+	/**
+	* Returns the Spring bean ID for this bean.
+	*
+	* @return the Spring bean ID for this bean
+	*/
+	public java.lang.String getBeanIdentifier() {
+		return _shoppingOrderService.getBeanIdentifier();
+	}
+
+	/**
+	* Sets the Spring bean ID for this bean.
+	*
+	* @param beanIdentifier the Spring bean ID for this bean
+	*/
+	public void setBeanIdentifier(java.lang.String beanIdentifier) {
+		_shoppingOrderService.setBeanIdentifier(beanIdentifier);
+	}
+
+	public java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		return _shoppingOrderService.invokeMethod(name, parameterTypes,
+			arguments);
 	}
 
 	public void completeOrder(long groupId, java.lang.String number,
@@ -95,8 +123,27 @@ public class ShoppingOrderServiceWrapper implements ShoppingOrderService {
 			ccNumber, ccExpMonth, ccExpYear, ccVerNumber, comments);
 	}
 
+	/**
+	 * @deprecated Renamed to {@link #getWrappedService}
+	 */
 	public ShoppingOrderService getWrappedShoppingOrderService() {
 		return _shoppingOrderService;
+	}
+
+	/**
+	 * @deprecated Renamed to {@link #setWrappedService}
+	 */
+	public void setWrappedShoppingOrderService(
+		ShoppingOrderService shoppingOrderService) {
+		_shoppingOrderService = shoppingOrderService;
+	}
+
+	public ShoppingOrderService getWrappedService() {
+		return _shoppingOrderService;
+	}
+
+	public void setWrappedService(ShoppingOrderService shoppingOrderService) {
+		_shoppingOrderService = shoppingOrderService;
 	}
 
 	private ShoppingOrderService _shoppingOrderService;

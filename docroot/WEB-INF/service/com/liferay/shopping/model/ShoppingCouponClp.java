@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,15 +17,22 @@ package com.liferay.shopping.model;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.shopping.service.ClpSerializer;
+import com.liferay.shopping.service.ShoppingCouponLocalServiceUtil;
+
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -35,16 +42,165 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 	public ShoppingCouponClp() {
 	}
 
+	public Class<?> getModelClass() {
+		return ShoppingCoupon.class;
+	}
+
+	public String getModelClassName() {
+		return ShoppingCoupon.class.getName();
+	}
+
 	public long getPrimaryKey() {
 		return _couponId;
 	}
 
-	public void setPrimaryKey(long pk) {
-		setCouponId(pk);
+	public void setPrimaryKey(long primaryKey) {
+		setCouponId(primaryKey);
 	}
 
 	public Serializable getPrimaryKeyObj() {
 		return new Long(_couponId);
+	}
+
+	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
+		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("couponId", getCouponId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("code", getCode());
+		attributes.put("name", getName());
+		attributes.put("description", getDescription());
+		attributes.put("startDate", getStartDate());
+		attributes.put("endDate", getEndDate());
+		attributes.put("active", getActive());
+		attributes.put("limitCategories", getLimitCategories());
+		attributes.put("limitSkus", getLimitSkus());
+		attributes.put("minOrder", getMinOrder());
+		attributes.put("discount", getDiscount());
+		attributes.put("discountType", getDiscountType());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long couponId = (Long)attributes.get("couponId");
+
+		if (couponId != null) {
+			setCouponId(couponId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String code = (String)attributes.get("code");
+
+		if (code != null) {
+			setCode(code);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
+		}
+
+		String description = (String)attributes.get("description");
+
+		if (description != null) {
+			setDescription(description);
+		}
+
+		Date startDate = (Date)attributes.get("startDate");
+
+		if (startDate != null) {
+			setStartDate(startDate);
+		}
+
+		Date endDate = (Date)attributes.get("endDate");
+
+		if (endDate != null) {
+			setEndDate(endDate);
+		}
+
+		Boolean active = (Boolean)attributes.get("active");
+
+		if (active != null) {
+			setActive(active);
+		}
+
+		String limitCategories = (String)attributes.get("limitCategories");
+
+		if (limitCategories != null) {
+			setLimitCategories(limitCategories);
+		}
+
+		String limitSkus = (String)attributes.get("limitSkus");
+
+		if (limitSkus != null) {
+			setLimitSkus(limitSkus);
+		}
+
+		Double minOrder = (Double)attributes.get("minOrder");
+
+		if (minOrder != null) {
+			setMinOrder(minOrder);
+		}
+
+		Double discount = (Double)attributes.get("discount");
+
+		if (discount != null) {
+			setDiscount(discount);
+		}
+
+		String discountType = (String)attributes.get("discountType");
+
+		if (discountType != null) {
+			setDiscountType(discountType);
+		}
 	}
 
 	public long getCouponId() {
@@ -53,6 +209,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setCouponId(long couponId) {
 		_couponId = couponId;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCouponId", long.class);
+
+				method.invoke(_shoppingCouponRemoteModel, couponId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getGroupId() {
@@ -61,6 +230,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_shoppingCouponRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getCompanyId() {
@@ -69,6 +251,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_shoppingCouponRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getUserId() {
@@ -77,6 +272,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_shoppingCouponRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getUserUuid() throws SystemException {
@@ -93,6 +301,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_shoppingCouponRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getCreateDate() {
@@ -101,6 +322,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_shoppingCouponRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getModifiedDate() {
@@ -109,6 +343,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_shoppingCouponRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getCode() {
@@ -117,6 +364,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setCode(String code) {
 		_code = code;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCode", String.class);
+
+				method.invoke(_shoppingCouponRemoteModel, code);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getName() {
@@ -125,6 +385,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setName(String name) {
 		_name = name;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_shoppingCouponRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getDescription() {
@@ -133,6 +406,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setDescription(String description) {
 		_description = description;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDescription", String.class);
+
+				method.invoke(_shoppingCouponRemoteModel, description);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getStartDate() {
@@ -141,6 +427,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setStartDate(Date startDate) {
 		_startDate = startDate;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setStartDate", Date.class);
+
+				method.invoke(_shoppingCouponRemoteModel, startDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getEndDate() {
@@ -149,6 +448,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setEndDate(Date endDate) {
 		_endDate = endDate;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setEndDate", Date.class);
+
+				method.invoke(_shoppingCouponRemoteModel, endDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean getActive() {
@@ -161,6 +473,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setActive(boolean active) {
 		_active = active;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setActive", boolean.class);
+
+				method.invoke(_shoppingCouponRemoteModel, active);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getLimitCategories() {
@@ -169,6 +494,20 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setLimitCategories(String limitCategories) {
 		_limitCategories = limitCategories;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLimitCategories",
+						String.class);
+
+				method.invoke(_shoppingCouponRemoteModel, limitCategories);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getLimitSkus() {
@@ -177,6 +516,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setLimitSkus(String limitSkus) {
 		_limitSkus = limitSkus;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLimitSkus", String.class);
+
+				method.invoke(_shoppingCouponRemoteModel, limitSkus);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public double getMinOrder() {
@@ -185,6 +537,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setMinOrder(double minOrder) {
 		_minOrder = minOrder;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setMinOrder", double.class);
+
+				method.invoke(_shoppingCouponRemoteModel, minOrder);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public double getDiscount() {
@@ -193,6 +558,19 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setDiscount(double discount) {
 		_discount = discount;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDiscount", double.class);
+
+				method.invoke(_shoppingCouponRemoteModel, discount);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getDiscountType() {
@@ -201,31 +579,146 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 
 	public void setDiscountType(String discountType) {
 		_discountType = discountType;
+
+		if (_shoppingCouponRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCouponRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDiscountType", String.class);
+
+				method.invoke(_shoppingCouponRemoteModel, discountType);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean hasValidDateRange() {
-		throw new UnsupportedOperationException();
-	}
+		try {
+			String methodName = "hasValidDateRange";
 
-	public boolean hasValidEndDate() {
-		throw new UnsupportedOperationException();
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
 	public boolean hasValidStartDate() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "hasValidStartDate";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
-	public ShoppingCoupon toEscapedModel() {
-		if (isEscapedModel()) {
-			return this;
+	public boolean hasValidEndDate() {
+		try {
+			String methodName = "hasValidEndDate";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	public BaseModel<?> getShoppingCouponRemoteModel() {
+		return _shoppingCouponRemoteModel;
+	}
+
+	public void setShoppingCouponRemoteModel(
+		BaseModel<?> shoppingCouponRemoteModel) {
+		_shoppingCouponRemoteModel = shoppingCouponRemoteModel;
+	}
+
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _shoppingCouponRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_shoppingCouponRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	public void persist() throws SystemException {
+		if (this.isNew()) {
+			ShoppingCouponLocalServiceUtil.addShoppingCoupon(this);
 		}
 		else {
-			return (ShoppingCoupon)Proxy.newProxyInstance(ShoppingCoupon.class.getClassLoader(),
-				new Class[] { ShoppingCoupon.class },
-				new AutoEscapeBeanHandler(this));
+			ShoppingCouponLocalServiceUtil.updateShoppingCoupon(this);
 		}
 	}
 
+	@Override
+	public ShoppingCoupon toEscapedModel() {
+		return (ShoppingCoupon)ProxyUtil.newProxyInstance(ShoppingCoupon.class.getClassLoader(),
+			new Class[] { ShoppingCoupon.class },
+			new AutoEscapeBeanHandler(this));
+	}
+
+	public ShoppingCoupon toUnescapedModel() {
+		return this;
+	}
+
+	@Override
 	public Object clone() {
 		ShoppingCouponClp clone = new ShoppingCouponClp();
 
@@ -264,23 +757,21 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 		return 0;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ShoppingCouponClp)) {
 			return false;
 		}
 
-		ShoppingCouponClp shoppingCoupon = null;
+		ShoppingCouponClp shoppingCoupon = (ShoppingCouponClp)obj;
 
-		try {
-			shoppingCoupon = (ShoppingCouponClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		long primaryKey = shoppingCoupon.getPrimaryKey();
 
-		long pk = shoppingCoupon.getPrimaryKey();
-
-		if (getPrimaryKey() == pk) {
+		if (getPrimaryKey() == primaryKey) {
 			return true;
 		}
 		else {
@@ -288,10 +779,12 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
 	}
 
+	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(37);
 
@@ -440,4 +933,5 @@ public class ShoppingCouponClp extends BaseModelImpl<ShoppingCoupon>
 	private double _minOrder;
 	private double _discount;
 	private String _discountType;
+	private BaseModel<?> _shoppingCouponRemoteModel;
 }

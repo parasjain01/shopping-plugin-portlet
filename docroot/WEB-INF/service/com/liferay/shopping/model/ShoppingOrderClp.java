@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,15 +17,22 @@ package com.liferay.shopping.model;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.shopping.service.ClpSerializer;
+import com.liferay.shopping.service.ShoppingOrderLocalServiceUtil;
+
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -35,16 +42,398 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 	public ShoppingOrderClp() {
 	}
 
+	public Class<?> getModelClass() {
+		return ShoppingOrder.class;
+	}
+
+	public String getModelClassName() {
+		return ShoppingOrder.class.getName();
+	}
+
 	public long getPrimaryKey() {
 		return _orderId;
 	}
 
-	public void setPrimaryKey(long pk) {
-		setOrderId(pk);
+	public void setPrimaryKey(long primaryKey) {
+		setOrderId(primaryKey);
 	}
 
 	public Serializable getPrimaryKeyObj() {
 		return new Long(_orderId);
+	}
+
+	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
+		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("orderId", getOrderId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("number", getNumber());
+		attributes.put("tax", getTax());
+		attributes.put("shipping", getShipping());
+		attributes.put("altShipping", getAltShipping());
+		attributes.put("requiresShipping", getRequiresShipping());
+		attributes.put("insure", getInsure());
+		attributes.put("insurance", getInsurance());
+		attributes.put("couponCodes", getCouponCodes());
+		attributes.put("couponDiscount", getCouponDiscount());
+		attributes.put("billingFirstName", getBillingFirstName());
+		attributes.put("billingLastName", getBillingLastName());
+		attributes.put("billingEmailAddress", getBillingEmailAddress());
+		attributes.put("billingCompany", getBillingCompany());
+		attributes.put("billingStreet", getBillingStreet());
+		attributes.put("billingCity", getBillingCity());
+		attributes.put("billingState", getBillingState());
+		attributes.put("billingZip", getBillingZip());
+		attributes.put("billingCountry", getBillingCountry());
+		attributes.put("billingPhone", getBillingPhone());
+		attributes.put("shipToBilling", getShipToBilling());
+		attributes.put("shippingFirstName", getShippingFirstName());
+		attributes.put("shippingLastName", getShippingLastName());
+		attributes.put("shippingEmailAddress", getShippingEmailAddress());
+		attributes.put("shippingCompany", getShippingCompany());
+		attributes.put("shippingStreet", getShippingStreet());
+		attributes.put("shippingCity", getShippingCity());
+		attributes.put("shippingState", getShippingState());
+		attributes.put("shippingZip", getShippingZip());
+		attributes.put("shippingCountry", getShippingCountry());
+		attributes.put("shippingPhone", getShippingPhone());
+		attributes.put("ccName", getCcName());
+		attributes.put("ccType", getCcType());
+		attributes.put("ccNumber", getCcNumber());
+		attributes.put("ccExpMonth", getCcExpMonth());
+		attributes.put("ccExpYear", getCcExpYear());
+		attributes.put("ccVerNumber", getCcVerNumber());
+		attributes.put("comments", getComments());
+		attributes.put("ppTxnId", getPpTxnId());
+		attributes.put("ppPaymentStatus", getPpPaymentStatus());
+		attributes.put("ppPaymentGross", getPpPaymentGross());
+		attributes.put("ppReceiverEmail", getPpReceiverEmail());
+		attributes.put("ppPayerEmail", getPpPayerEmail());
+		attributes.put("sendOrderEmail", getSendOrderEmail());
+		attributes.put("sendShippingEmail", getSendShippingEmail());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long orderId = (Long)attributes.get("orderId");
+
+		if (orderId != null) {
+			setOrderId(orderId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		String number = (String)attributes.get("number");
+
+		if (number != null) {
+			setNumber(number);
+		}
+
+		Double tax = (Double)attributes.get("tax");
+
+		if (tax != null) {
+			setTax(tax);
+		}
+
+		Double shipping = (Double)attributes.get("shipping");
+
+		if (shipping != null) {
+			setShipping(shipping);
+		}
+
+		String altShipping = (String)attributes.get("altShipping");
+
+		if (altShipping != null) {
+			setAltShipping(altShipping);
+		}
+
+		Boolean requiresShipping = (Boolean)attributes.get("requiresShipping");
+
+		if (requiresShipping != null) {
+			setRequiresShipping(requiresShipping);
+		}
+
+		Boolean insure = (Boolean)attributes.get("insure");
+
+		if (insure != null) {
+			setInsure(insure);
+		}
+
+		Double insurance = (Double)attributes.get("insurance");
+
+		if (insurance != null) {
+			setInsurance(insurance);
+		}
+
+		String couponCodes = (String)attributes.get("couponCodes");
+
+		if (couponCodes != null) {
+			setCouponCodes(couponCodes);
+		}
+
+		Double couponDiscount = (Double)attributes.get("couponDiscount");
+
+		if (couponDiscount != null) {
+			setCouponDiscount(couponDiscount);
+		}
+
+		String billingFirstName = (String)attributes.get("billingFirstName");
+
+		if (billingFirstName != null) {
+			setBillingFirstName(billingFirstName);
+		}
+
+		String billingLastName = (String)attributes.get("billingLastName");
+
+		if (billingLastName != null) {
+			setBillingLastName(billingLastName);
+		}
+
+		String billingEmailAddress = (String)attributes.get(
+				"billingEmailAddress");
+
+		if (billingEmailAddress != null) {
+			setBillingEmailAddress(billingEmailAddress);
+		}
+
+		String billingCompany = (String)attributes.get("billingCompany");
+
+		if (billingCompany != null) {
+			setBillingCompany(billingCompany);
+		}
+
+		String billingStreet = (String)attributes.get("billingStreet");
+
+		if (billingStreet != null) {
+			setBillingStreet(billingStreet);
+		}
+
+		String billingCity = (String)attributes.get("billingCity");
+
+		if (billingCity != null) {
+			setBillingCity(billingCity);
+		}
+
+		String billingState = (String)attributes.get("billingState");
+
+		if (billingState != null) {
+			setBillingState(billingState);
+		}
+
+		String billingZip = (String)attributes.get("billingZip");
+
+		if (billingZip != null) {
+			setBillingZip(billingZip);
+		}
+
+		String billingCountry = (String)attributes.get("billingCountry");
+
+		if (billingCountry != null) {
+			setBillingCountry(billingCountry);
+		}
+
+		String billingPhone = (String)attributes.get("billingPhone");
+
+		if (billingPhone != null) {
+			setBillingPhone(billingPhone);
+		}
+
+		Boolean shipToBilling = (Boolean)attributes.get("shipToBilling");
+
+		if (shipToBilling != null) {
+			setShipToBilling(shipToBilling);
+		}
+
+		String shippingFirstName = (String)attributes.get("shippingFirstName");
+
+		if (shippingFirstName != null) {
+			setShippingFirstName(shippingFirstName);
+		}
+
+		String shippingLastName = (String)attributes.get("shippingLastName");
+
+		if (shippingLastName != null) {
+			setShippingLastName(shippingLastName);
+		}
+
+		String shippingEmailAddress = (String)attributes.get(
+				"shippingEmailAddress");
+
+		if (shippingEmailAddress != null) {
+			setShippingEmailAddress(shippingEmailAddress);
+		}
+
+		String shippingCompany = (String)attributes.get("shippingCompany");
+
+		if (shippingCompany != null) {
+			setShippingCompany(shippingCompany);
+		}
+
+		String shippingStreet = (String)attributes.get("shippingStreet");
+
+		if (shippingStreet != null) {
+			setShippingStreet(shippingStreet);
+		}
+
+		String shippingCity = (String)attributes.get("shippingCity");
+
+		if (shippingCity != null) {
+			setShippingCity(shippingCity);
+		}
+
+		String shippingState = (String)attributes.get("shippingState");
+
+		if (shippingState != null) {
+			setShippingState(shippingState);
+		}
+
+		String shippingZip = (String)attributes.get("shippingZip");
+
+		if (shippingZip != null) {
+			setShippingZip(shippingZip);
+		}
+
+		String shippingCountry = (String)attributes.get("shippingCountry");
+
+		if (shippingCountry != null) {
+			setShippingCountry(shippingCountry);
+		}
+
+		String shippingPhone = (String)attributes.get("shippingPhone");
+
+		if (shippingPhone != null) {
+			setShippingPhone(shippingPhone);
+		}
+
+		String ccName = (String)attributes.get("ccName");
+
+		if (ccName != null) {
+			setCcName(ccName);
+		}
+
+		String ccType = (String)attributes.get("ccType");
+
+		if (ccType != null) {
+			setCcType(ccType);
+		}
+
+		String ccNumber = (String)attributes.get("ccNumber");
+
+		if (ccNumber != null) {
+			setCcNumber(ccNumber);
+		}
+
+		Integer ccExpMonth = (Integer)attributes.get("ccExpMonth");
+
+		if (ccExpMonth != null) {
+			setCcExpMonth(ccExpMonth);
+		}
+
+		Integer ccExpYear = (Integer)attributes.get("ccExpYear");
+
+		if (ccExpYear != null) {
+			setCcExpYear(ccExpYear);
+		}
+
+		String ccVerNumber = (String)attributes.get("ccVerNumber");
+
+		if (ccVerNumber != null) {
+			setCcVerNumber(ccVerNumber);
+		}
+
+		String comments = (String)attributes.get("comments");
+
+		if (comments != null) {
+			setComments(comments);
+		}
+
+		String ppTxnId = (String)attributes.get("ppTxnId");
+
+		if (ppTxnId != null) {
+			setPpTxnId(ppTxnId);
+		}
+
+		String ppPaymentStatus = (String)attributes.get("ppPaymentStatus");
+
+		if (ppPaymentStatus != null) {
+			setPpPaymentStatus(ppPaymentStatus);
+		}
+
+		Double ppPaymentGross = (Double)attributes.get("ppPaymentGross");
+
+		if (ppPaymentGross != null) {
+			setPpPaymentGross(ppPaymentGross);
+		}
+
+		String ppReceiverEmail = (String)attributes.get("ppReceiverEmail");
+
+		if (ppReceiverEmail != null) {
+			setPpReceiverEmail(ppReceiverEmail);
+		}
+
+		String ppPayerEmail = (String)attributes.get("ppPayerEmail");
+
+		if (ppPayerEmail != null) {
+			setPpPayerEmail(ppPayerEmail);
+		}
+
+		Boolean sendOrderEmail = (Boolean)attributes.get("sendOrderEmail");
+
+		if (sendOrderEmail != null) {
+			setSendOrderEmail(sendOrderEmail);
+		}
+
+		Boolean sendShippingEmail = (Boolean)attributes.get("sendShippingEmail");
+
+		if (sendShippingEmail != null) {
+			setSendShippingEmail(sendShippingEmail);
+		}
 	}
 
 	public long getOrderId() {
@@ -53,6 +442,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setOrderId(long orderId) {
 		_orderId = orderId;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOrderId", long.class);
+
+				method.invoke(_shoppingOrderRemoteModel, orderId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getGroupId() {
@@ -61,6 +463,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_shoppingOrderRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getCompanyId() {
@@ -69,6 +484,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_shoppingOrderRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getUserId() {
@@ -77,6 +505,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_shoppingOrderRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getUserUuid() throws SystemException {
@@ -93,6 +534,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getCreateDate() {
@@ -101,6 +555,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_shoppingOrderRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getModifiedDate() {
@@ -109,6 +576,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_shoppingOrderRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getNumber() {
@@ -117,6 +597,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setNumber(String number) {
 		_number = number;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setNumber", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, number);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public double getTax() {
@@ -125,6 +618,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setTax(double tax) {
 		_tax = tax;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTax", double.class);
+
+				method.invoke(_shoppingOrderRemoteModel, tax);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public double getShipping() {
@@ -133,6 +639,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShipping(double shipping) {
 		_shipping = shipping;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShipping", double.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shipping);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getAltShipping() {
@@ -141,6 +660,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setAltShipping(String altShipping) {
 		_altShipping = altShipping;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAltShipping", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, altShipping);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean getRequiresShipping() {
@@ -153,6 +685,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setRequiresShipping(boolean requiresShipping) {
 		_requiresShipping = requiresShipping;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setRequiresShipping",
+						boolean.class);
+
+				method.invoke(_shoppingOrderRemoteModel, requiresShipping);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean getInsure() {
@@ -165,6 +711,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setInsure(boolean insure) {
 		_insure = insure;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setInsure", boolean.class);
+
+				method.invoke(_shoppingOrderRemoteModel, insure);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public double getInsurance() {
@@ -173,6 +732,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setInsurance(double insurance) {
 		_insurance = insurance;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setInsurance", double.class);
+
+				method.invoke(_shoppingOrderRemoteModel, insurance);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getCouponCodes() {
@@ -181,6 +753,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCouponCodes(String couponCodes) {
 		_couponCodes = couponCodes;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCouponCodes", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, couponCodes);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public double getCouponDiscount() {
@@ -189,6 +774,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCouponDiscount(double couponDiscount) {
 		_couponDiscount = couponDiscount;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCouponDiscount",
+						double.class);
+
+				method.invoke(_shoppingOrderRemoteModel, couponDiscount);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingFirstName() {
@@ -197,6 +796,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingFirstName(String billingFirstName) {
 		_billingFirstName = billingFirstName;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingFirstName",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingFirstName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingLastName() {
@@ -205,6 +818,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingLastName(String billingLastName) {
 		_billingLastName = billingLastName;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingLastName",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingLastName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingEmailAddress() {
@@ -213,6 +840,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingEmailAddress(String billingEmailAddress) {
 		_billingEmailAddress = billingEmailAddress;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingEmailAddress",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingEmailAddress);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingCompany() {
@@ -221,6 +862,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingCompany(String billingCompany) {
 		_billingCompany = billingCompany;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingCompany",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingCompany);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingStreet() {
@@ -229,6 +884,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingStreet(String billingStreet) {
 		_billingStreet = billingStreet;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingStreet", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingStreet);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingCity() {
@@ -237,6 +905,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingCity(String billingCity) {
 		_billingCity = billingCity;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingCity", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingCity);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingState() {
@@ -245,6 +926,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingState(String billingState) {
 		_billingState = billingState;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingState", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingState);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingZip() {
@@ -253,6 +947,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingZip(String billingZip) {
 		_billingZip = billingZip;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingZip", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingZip);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingCountry() {
@@ -261,6 +968,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingCountry(String billingCountry) {
 		_billingCountry = billingCountry;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingCountry",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingCountry);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getBillingPhone() {
@@ -269,6 +990,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setBillingPhone(String billingPhone) {
 		_billingPhone = billingPhone;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setBillingPhone", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, billingPhone);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean getShipToBilling() {
@@ -281,6 +1015,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShipToBilling(boolean shipToBilling) {
 		_shipToBilling = shipToBilling;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShipToBilling",
+						boolean.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shipToBilling);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingFirstName() {
@@ -289,6 +1037,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingFirstName(String shippingFirstName) {
 		_shippingFirstName = shippingFirstName;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingFirstName",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingFirstName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingLastName() {
@@ -297,6 +1059,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingLastName(String shippingLastName) {
 		_shippingLastName = shippingLastName;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingLastName",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingLastName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingEmailAddress() {
@@ -305,6 +1081,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingEmailAddress(String shippingEmailAddress) {
 		_shippingEmailAddress = shippingEmailAddress;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingEmailAddress",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingEmailAddress);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingCompany() {
@@ -313,6 +1103,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingCompany(String shippingCompany) {
 		_shippingCompany = shippingCompany;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingCompany",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingCompany);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingStreet() {
@@ -321,6 +1125,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingStreet(String shippingStreet) {
 		_shippingStreet = shippingStreet;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingStreet",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingStreet);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingCity() {
@@ -329,6 +1147,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingCity(String shippingCity) {
 		_shippingCity = shippingCity;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingCity", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingCity);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingState() {
@@ -337,6 +1168,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingState(String shippingState) {
 		_shippingState = shippingState;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingState", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingState);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingZip() {
@@ -345,6 +1189,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingZip(String shippingZip) {
 		_shippingZip = shippingZip;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingZip", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingZip);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingCountry() {
@@ -353,6 +1210,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingCountry(String shippingCountry) {
 		_shippingCountry = shippingCountry;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingCountry",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingCountry);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getShippingPhone() {
@@ -361,6 +1232,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setShippingPhone(String shippingPhone) {
 		_shippingPhone = shippingPhone;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setShippingPhone", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, shippingPhone);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getCcName() {
@@ -369,6 +1253,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCcName(String ccName) {
 		_ccName = ccName;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCcName", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ccName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getCcType() {
@@ -377,6 +1274,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCcType(String ccType) {
 		_ccType = ccType;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCcType", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ccType);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getCcNumber() {
@@ -385,6 +1295,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCcNumber(String ccNumber) {
 		_ccNumber = ccNumber;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCcNumber", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ccNumber);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public int getCcExpMonth() {
@@ -393,6 +1316,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCcExpMonth(int ccExpMonth) {
 		_ccExpMonth = ccExpMonth;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCcExpMonth", int.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ccExpMonth);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public int getCcExpYear() {
@@ -401,6 +1337,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCcExpYear(int ccExpYear) {
 		_ccExpYear = ccExpYear;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCcExpYear", int.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ccExpYear);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getCcVerNumber() {
@@ -409,6 +1358,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setCcVerNumber(String ccVerNumber) {
 		_ccVerNumber = ccVerNumber;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCcVerNumber", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ccVerNumber);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getComments() {
@@ -417,6 +1379,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setComments(String comments) {
 		_comments = comments;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setComments", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, comments);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getPpTxnId() {
@@ -425,6 +1400,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setPpTxnId(String ppTxnId) {
 		_ppTxnId = ppTxnId;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPpTxnId", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ppTxnId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getPpPaymentStatus() {
@@ -433,6 +1421,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setPpPaymentStatus(String ppPaymentStatus) {
 		_ppPaymentStatus = ppPaymentStatus;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPpPaymentStatus",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ppPaymentStatus);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public double getPpPaymentGross() {
@@ -441,6 +1443,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setPpPaymentGross(double ppPaymentGross) {
 		_ppPaymentGross = ppPaymentGross;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPpPaymentGross",
+						double.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ppPaymentGross);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getPpReceiverEmail() {
@@ -449,6 +1465,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setPpReceiverEmail(String ppReceiverEmail) {
 		_ppReceiverEmail = ppReceiverEmail;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPpReceiverEmail",
+						String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ppReceiverEmail);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getPpPayerEmail() {
@@ -457,6 +1487,19 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setPpPayerEmail(String ppPayerEmail) {
 		_ppPayerEmail = ppPayerEmail;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPpPayerEmail", String.class);
+
+				method.invoke(_shoppingOrderRemoteModel, ppPayerEmail);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean getSendOrderEmail() {
@@ -469,6 +1512,20 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setSendOrderEmail(boolean sendOrderEmail) {
 		_sendOrderEmail = sendOrderEmail;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSendOrderEmail",
+						boolean.class);
+
+				method.invoke(_shoppingOrderRemoteModel, sendOrderEmail);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean getSendShippingEmail() {
@@ -481,19 +1538,92 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 
 	public void setSendShippingEmail(boolean sendShippingEmail) {
 		_sendShippingEmail = sendShippingEmail;
+
+		if (_shoppingOrderRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingOrderRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSendShippingEmail",
+						boolean.class);
+
+				method.invoke(_shoppingOrderRemoteModel, sendShippingEmail);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
-	public ShoppingOrder toEscapedModel() {
-		if (isEscapedModel()) {
-			return this;
+	public BaseModel<?> getShoppingOrderRemoteModel() {
+		return _shoppingOrderRemoteModel;
+	}
+
+	public void setShoppingOrderRemoteModel(
+		BaseModel<?> shoppingOrderRemoteModel) {
+		_shoppingOrderRemoteModel = shoppingOrderRemoteModel;
+	}
+
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _shoppingOrderRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_shoppingOrderRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	public void persist() throws SystemException {
+		if (this.isNew()) {
+			ShoppingOrderLocalServiceUtil.addShoppingOrder(this);
 		}
 		else {
-			return (ShoppingOrder)Proxy.newProxyInstance(ShoppingOrder.class.getClassLoader(),
-				new Class[] { ShoppingOrder.class },
-				new AutoEscapeBeanHandler(this));
+			ShoppingOrderLocalServiceUtil.updateShoppingOrder(this);
 		}
 	}
 
+	@Override
+	public ShoppingOrder toEscapedModel() {
+		return (ShoppingOrder)ProxyUtil.newProxyInstance(ShoppingOrder.class.getClassLoader(),
+			new Class[] { ShoppingOrder.class }, new AutoEscapeBeanHandler(this));
+	}
+
+	public ShoppingOrder toUnescapedModel() {
+		return this;
+	}
+
+	@Override
 	public Object clone() {
 		ShoppingOrderClp clone = new ShoppingOrderClp();
 
@@ -567,23 +1697,21 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 		return 0;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ShoppingOrderClp)) {
 			return false;
 		}
 
-		ShoppingOrderClp shoppingOrder = null;
+		ShoppingOrderClp shoppingOrder = (ShoppingOrderClp)obj;
 
-		try {
-			shoppingOrder = (ShoppingOrderClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		long primaryKey = shoppingOrder.getPrimaryKey();
 
-		long pk = shoppingOrder.getPrimaryKey();
-
-		if (getPrimaryKey() == pk) {
+		if (getPrimaryKey() == primaryKey) {
 			return true;
 		}
 		else {
@@ -591,10 +1719,12 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
 	}
 
+	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(103);
 
@@ -974,4 +2104,5 @@ public class ShoppingOrderClp extends BaseModelImpl<ShoppingOrder>
 	private String _ppPayerEmail;
 	private boolean _sendOrderEmail;
 	private boolean _sendShippingEmail;
+	private BaseModel<?> _shoppingOrderRemoteModel;
 }

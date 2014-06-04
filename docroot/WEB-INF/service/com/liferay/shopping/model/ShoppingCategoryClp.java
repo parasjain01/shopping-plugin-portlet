@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,15 +16,22 @@ package com.liferay.shopping.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.shopping.service.ClpSerializer;
+import com.liferay.shopping.service.ShoppingCategoryLocalServiceUtil;
+
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -34,16 +41,109 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 	public ShoppingCategoryClp() {
 	}
 
+	public Class<?> getModelClass() {
+		return ShoppingCategory.class;
+	}
+
+	public String getModelClassName() {
+		return ShoppingCategory.class.getName();
+	}
+
 	public long getPrimaryKey() {
 		return _categoryId;
 	}
 
-	public void setPrimaryKey(long pk) {
-		setCategoryId(pk);
+	public void setPrimaryKey(long primaryKey) {
+		setCategoryId(primaryKey);
 	}
 
 	public Serializable getPrimaryKeyObj() {
 		return new Long(_categoryId);
+	}
+
+	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
+		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("categoryId", getCategoryId());
+		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("parentCategoryId", getParentCategoryId());
+		attributes.put("name", getName());
+		attributes.put("description", getDescription());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long categoryId = (Long)attributes.get("categoryId");
+
+		if (categoryId != null) {
+			setCategoryId(categoryId);
+		}
+
+		Long groupId = (Long)attributes.get("groupId");
+
+		if (groupId != null) {
+			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		Date modifiedDate = (Date)attributes.get("modifiedDate");
+
+		if (modifiedDate != null) {
+			setModifiedDate(modifiedDate);
+		}
+
+		Long parentCategoryId = (Long)attributes.get("parentCategoryId");
+
+		if (parentCategoryId != null) {
+			setParentCategoryId(parentCategoryId);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
+		}
+
+		String description = (String)attributes.get("description");
+
+		if (description != null) {
+			setDescription(description);
+		}
 	}
 
 	public long getCategoryId() {
@@ -52,6 +152,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setCategoryId(long categoryId) {
 		_categoryId = categoryId;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCategoryId", long.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, categoryId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getGroupId() {
@@ -60,6 +173,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getCompanyId() {
@@ -68,6 +194,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getUserId() {
@@ -76,6 +215,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getUserUuid() throws SystemException {
@@ -92,6 +244,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getCreateDate() {
@@ -100,6 +265,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public Date getModifiedDate() {
@@ -108,6 +286,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getParentCategoryId() {
@@ -116,6 +307,20 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setParentCategoryId(long parentCategoryId) {
 		_parentCategoryId = parentCategoryId;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setParentCategoryId",
+						long.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, parentCategoryId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getName() {
@@ -124,6 +329,19 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setName(String name) {
 		_name = name;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getDescription() {
@@ -132,23 +350,110 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 
 	public void setDescription(String description) {
 		_description = description;
+
+		if (_shoppingCategoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingCategoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDescription", String.class);
+
+				method.invoke(_shoppingCategoryRemoteModel, description);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public boolean isRoot() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "isRoot";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
-	public ShoppingCategory toEscapedModel() {
-		if (isEscapedModel()) {
-			return this;
+	public BaseModel<?> getShoppingCategoryRemoteModel() {
+		return _shoppingCategoryRemoteModel;
+	}
+
+	public void setShoppingCategoryRemoteModel(
+		BaseModel<?> shoppingCategoryRemoteModel) {
+		_shoppingCategoryRemoteModel = shoppingCategoryRemoteModel;
+	}
+
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _shoppingCategoryRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_shoppingCategoryRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	public void persist() throws SystemException {
+		if (this.isNew()) {
+			ShoppingCategoryLocalServiceUtil.addShoppingCategory(this);
 		}
 		else {
-			return (ShoppingCategory)Proxy.newProxyInstance(ShoppingCategory.class.getClassLoader(),
-				new Class[] { ShoppingCategory.class },
-				new AutoEscapeBeanHandler(this));
+			ShoppingCategoryLocalServiceUtil.updateShoppingCategory(this);
 		}
 	}
 
+	@Override
+	public ShoppingCategory toEscapedModel() {
+		return (ShoppingCategory)ProxyUtil.newProxyInstance(ShoppingCategory.class.getClassLoader(),
+			new Class[] { ShoppingCategory.class },
+			new AutoEscapeBeanHandler(this));
+	}
+
+	public ShoppingCategory toUnescapedModel() {
+		return this;
+	}
+
+	@Override
 	public Object clone() {
 		ShoppingCategoryClp clone = new ShoppingCategoryClp();
 
@@ -193,23 +498,21 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 		return 0;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ShoppingCategoryClp)) {
 			return false;
 		}
 
-		ShoppingCategoryClp shoppingCategory = null;
+		ShoppingCategoryClp shoppingCategory = (ShoppingCategoryClp)obj;
 
-		try {
-			shoppingCategory = (ShoppingCategoryClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		long primaryKey = shoppingCategory.getPrimaryKey();
 
-		long pk = shoppingCategory.getPrimaryKey();
-
-		if (getPrimaryKey() == pk) {
+		if (getPrimaryKey() == primaryKey) {
 			return true;
 		}
 		else {
@@ -217,10 +520,12 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
 	}
 
+	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(21);
 
@@ -313,4 +618,5 @@ public class ShoppingCategoryClp extends BaseModelImpl<ShoppingCategory>
 	private long _parentCategoryId;
 	private String _name;
 	private String _description;
+	private BaseModel<?> _shoppingCategoryRemoteModel;
 }

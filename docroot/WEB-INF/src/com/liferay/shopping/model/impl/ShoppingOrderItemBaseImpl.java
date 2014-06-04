@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.shopping.model.impl;
 
 import com.liferay.portal.kernel.exception.SystemException;
+
 import com.liferay.shopping.model.ShoppingOrderItem;
 import com.liferay.shopping.service.ShoppingOrderItemLocalServiceUtil;
 
@@ -32,12 +33,17 @@ import com.liferay.shopping.service.ShoppingOrderItemLocalServiceUtil;
  */
 public abstract class ShoppingOrderItemBaseImpl
 	extends ShoppingOrderItemModelImpl implements ShoppingOrderItem {
-	/**
+	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify or reference this class directly. All methods that expect a shopping order item model instance should use the {@link ShoppingOrderItem} interface instead.
 	 */
 	public void persist() throws SystemException {
-		ShoppingOrderItemLocalServiceUtil.updateShoppingOrderItem(this);
+		if (this.isNew()) {
+			ShoppingOrderItemLocalServiceUtil.addShoppingOrderItem(this);
+		}
+		else {
+			ShoppingOrderItemLocalServiceUtil.updateShoppingOrderItem(this);
+		}
 	}
 }

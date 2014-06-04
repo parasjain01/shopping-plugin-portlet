@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,12 +15,21 @@
 package com.liferay.shopping.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
+
+import com.liferay.shopping.service.ClpSerializer;
+import com.liferay.shopping.service.ShoppingItemFieldLocalServiceUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Brian Wing Shun Chan
@@ -30,16 +39,74 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 	public ShoppingItemFieldClp() {
 	}
 
+	public Class<?> getModelClass() {
+		return ShoppingItemField.class;
+	}
+
+	public String getModelClassName() {
+		return ShoppingItemField.class.getName();
+	}
+
 	public long getPrimaryKey() {
 		return _itemFieldId;
 	}
 
-	public void setPrimaryKey(long pk) {
-		setItemFieldId(pk);
+	public void setPrimaryKey(long primaryKey) {
+		setItemFieldId(primaryKey);
 	}
 
 	public Serializable getPrimaryKeyObj() {
 		return new Long(_itemFieldId);
+	}
+
+	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
+		setPrimaryKey(((Long)primaryKeyObj).longValue());
+	}
+
+	@Override
+	public Map<String, Object> getModelAttributes() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+
+		attributes.put("itemFieldId", getItemFieldId());
+		attributes.put("itemId", getItemId());
+		attributes.put("name", getName());
+		attributes.put("values", getValues());
+		attributes.put("description", getDescription());
+
+		return attributes;
+	}
+
+	@Override
+	public void setModelAttributes(Map<String, Object> attributes) {
+		Long itemFieldId = (Long)attributes.get("itemFieldId");
+
+		if (itemFieldId != null) {
+			setItemFieldId(itemFieldId);
+		}
+
+		Long itemId = (Long)attributes.get("itemId");
+
+		if (itemId != null) {
+			setItemId(itemId);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
+		}
+
+		String values = (String)attributes.get("values");
+
+		if (values != null) {
+			setValues(values);
+		}
+
+		String description = (String)attributes.get("description");
+
+		if (description != null) {
+			setDescription(description);
+		}
 	}
 
 	public long getItemFieldId() {
@@ -48,6 +115,19 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 
 	public void setItemFieldId(long itemFieldId) {
 		_itemFieldId = itemFieldId;
+
+		if (_shoppingItemFieldRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingItemFieldRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setItemFieldId", long.class);
+
+				method.invoke(_shoppingItemFieldRemoteModel, itemFieldId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public long getItemId() {
@@ -56,6 +136,19 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 
 	public void setItemId(long itemId) {
 		_itemId = itemId;
+
+		if (_shoppingItemFieldRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingItemFieldRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setItemId", long.class);
+
+				method.invoke(_shoppingItemFieldRemoteModel, itemId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getName() {
@@ -64,6 +157,19 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 
 	public void setName(String name) {
 		_name = name;
+
+		if (_shoppingItemFieldRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingItemFieldRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_shoppingItemFieldRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getValues() {
@@ -72,6 +178,19 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 
 	public void setValues(String values) {
 		_values = values;
+
+		if (_shoppingItemFieldRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingItemFieldRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setValues", String.class);
+
+				method.invoke(_shoppingItemFieldRemoteModel, values);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public String getDescription() {
@@ -80,27 +199,125 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 
 	public void setDescription(String description) {
 		_description = description;
-	}
 
-	public java.lang.String[] getValuesArray() {
-		throw new UnsupportedOperationException();
+		if (_shoppingItemFieldRemoteModel != null) {
+			try {
+				Class<?> clazz = _shoppingItemFieldRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDescription", String.class);
+
+				method.invoke(_shoppingItemFieldRemoteModel, description);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public void setValuesArray(java.lang.String[] valuesArray) {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "setValuesArray";
+
+			Class<?>[] parameterTypes = new Class<?>[] { java.lang.String.class };
+
+			Object[] parameterValues = new Object[] { valuesArray };
+
+			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
-	public ShoppingItemField toEscapedModel() {
-		if (isEscapedModel()) {
-			return this;
+	public java.lang.String[] getValuesArray() {
+		try {
+			String methodName = "getValuesArray";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.lang.String[] returnObj = (java.lang.String[])invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	public BaseModel<?> getShoppingItemFieldRemoteModel() {
+		return _shoppingItemFieldRemoteModel;
+	}
+
+	public void setShoppingItemFieldRemoteModel(
+		BaseModel<?> shoppingItemFieldRemoteModel) {
+		_shoppingItemFieldRemoteModel = shoppingItemFieldRemoteModel;
+	}
+
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _shoppingItemFieldRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_shoppingItemFieldRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	public void persist() throws SystemException {
+		if (this.isNew()) {
+			ShoppingItemFieldLocalServiceUtil.addShoppingItemField(this);
 		}
 		else {
-			return (ShoppingItemField)Proxy.newProxyInstance(ShoppingItemField.class.getClassLoader(),
-				new Class[] { ShoppingItemField.class },
-				new AutoEscapeBeanHandler(this));
+			ShoppingItemFieldLocalServiceUtil.updateShoppingItemField(this);
 		}
 	}
 
+	@Override
+	public ShoppingItemField toEscapedModel() {
+		return (ShoppingItemField)ProxyUtil.newProxyInstance(ShoppingItemField.class.getClassLoader(),
+			new Class[] { ShoppingItemField.class },
+			new AutoEscapeBeanHandler(this));
+	}
+
+	public ShoppingItemField toUnescapedModel() {
+		return this;
+	}
+
+	@Override
 	public Object clone() {
 		ShoppingItemFieldClp clone = new ShoppingItemFieldClp();
 
@@ -140,23 +357,21 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 		return 0;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ShoppingItemFieldClp)) {
 			return false;
 		}
 
-		ShoppingItemFieldClp shoppingItemField = null;
+		ShoppingItemFieldClp shoppingItemField = (ShoppingItemFieldClp)obj;
 
-		try {
-			shoppingItemField = (ShoppingItemFieldClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		long primaryKey = shoppingItemField.getPrimaryKey();
 
-		long pk = shoppingItemField.getPrimaryKey();
-
-		if (getPrimaryKey() == pk) {
+		if (getPrimaryKey() == primaryKey) {
 			return true;
 		}
 		else {
@@ -164,10 +379,12 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
 	}
 
+	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(11);
 
@@ -224,4 +441,5 @@ public class ShoppingItemFieldClp extends BaseModelImpl<ShoppingItemField>
 	private String _name;
 	private String _values;
 	private String _description;
+	private BaseModel<?> _shoppingItemFieldRemoteModel;
 }

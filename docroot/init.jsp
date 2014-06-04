@@ -41,7 +41,6 @@
 <%@ page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil" %>
 <%@ page import="com.liferay.portal.kernel.portlet.LiferayPortletURL" %>
 <%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %>
-<%@ page import="com.liferay.portal.kernel.servlet.ImageServletTokenUtil" %>
 <%@ page import="com.liferay.portal.kernel.servlet.SessionErrors" %>
 <%@ page import="com.liferay.portal.kernel.util.ArrayUtil" %>
 <%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.shopping.service;
 
+import com.liferay.portal.service.ServiceWrapper;
+
 /**
  * <p>
  * This class is a wrapper for {@link ShoppingCategoryService}.
@@ -23,10 +25,36 @@ package com.liferay.shopping.service;
  * @see       ShoppingCategoryService
  * @generated
  */
-public class ShoppingCategoryServiceWrapper implements ShoppingCategoryService {
+public class ShoppingCategoryServiceWrapper implements ShoppingCategoryService,
+	ServiceWrapper<ShoppingCategoryService> {
 	public ShoppingCategoryServiceWrapper(
 		ShoppingCategoryService shoppingCategoryService) {
 		_shoppingCategoryService = shoppingCategoryService;
+	}
+
+	/**
+	* Returns the Spring bean ID for this bean.
+	*
+	* @return the Spring bean ID for this bean
+	*/
+	public java.lang.String getBeanIdentifier() {
+		return _shoppingCategoryService.getBeanIdentifier();
+	}
+
+	/**
+	* Sets the Spring bean ID for this bean.
+	*
+	* @param beanIdentifier the Spring bean ID for this bean
+	*/
+	public void setBeanIdentifier(java.lang.String beanIdentifier) {
+		_shoppingCategoryService.setBeanIdentifier(beanIdentifier);
+	}
+
+	public java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		return _shoppingCategoryService.invokeMethod(name, parameterTypes,
+			arguments);
 	}
 
 	public com.liferay.shopping.model.ShoppingCategory addCategory(
@@ -89,8 +117,28 @@ public class ShoppingCategoryServiceWrapper implements ShoppingCategoryService {
 			serviceContext);
 	}
 
+	/**
+	 * @deprecated Renamed to {@link #getWrappedService}
+	 */
 	public ShoppingCategoryService getWrappedShoppingCategoryService() {
 		return _shoppingCategoryService;
+	}
+
+	/**
+	 * @deprecated Renamed to {@link #setWrappedService}
+	 */
+	public void setWrappedShoppingCategoryService(
+		ShoppingCategoryService shoppingCategoryService) {
+		_shoppingCategoryService = shoppingCategoryService;
+	}
+
+	public ShoppingCategoryService getWrappedService() {
+		return _shoppingCategoryService;
+	}
+
+	public void setWrappedService(
+		ShoppingCategoryService shoppingCategoryService) {
+		_shoppingCategoryService = shoppingCategoryService;
 	}
 
 	private ShoppingCategoryService _shoppingCategoryService;

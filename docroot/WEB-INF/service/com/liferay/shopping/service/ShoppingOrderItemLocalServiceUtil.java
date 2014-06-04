@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,14 +15,11 @@
 package com.liferay.shopping.service;
 
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
-import com.liferay.portal.kernel.util.ClassLoaderProxy;
+import com.liferay.portal.kernel.util.ReferenceRegistry;
+import com.liferay.portal.service.InvokableLocalService;
 
 /**
  * The utility for the shopping order item local service. This utility wraps {@link com.liferay.shopping.service.impl.ShoppingOrderItemLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * Never modify this class directly. Add custom service methods to {@link com.liferay.shopping.service.impl.ShoppingOrderItemLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
- * </p>
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
@@ -35,10 +32,16 @@ import com.liferay.portal.kernel.util.ClassLoaderProxy;
  * @generated
  */
 public class ShoppingOrderItemLocalServiceUtil {
+	/*
+	 * NOTE FOR DEVELOPERS:
+	 *
+	 * Never modify this class directly. Add custom service methods to {@link com.liferay.shopping.service.impl.ShoppingOrderItemLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
+	 */
+
 	/**
 	* Adds the shopping order item to the database. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to add
+	* @param shoppingOrderItem the shopping order item
 	* @return the shopping order item that was added
 	* @throws SystemException if a system exception occurred
 	*/
@@ -62,32 +65,39 @@ public class ShoppingOrderItemLocalServiceUtil {
 	/**
 	* Deletes the shopping order item with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param orderItemId the primary key of the shopping order item to delete
+	* @param orderItemId the primary key of the shopping order item
+	* @return the shopping order item that was removed
 	* @throws PortalException if a shopping order item with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
-	public static void deleteShoppingOrderItem(long orderItemId)
+	public static com.liferay.shopping.model.ShoppingOrderItem deleteShoppingOrderItem(
+		long orderItemId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		getService().deleteShoppingOrderItem(orderItemId);
+		return getService().deleteShoppingOrderItem(orderItemId);
 	}
 
 	/**
 	* Deletes the shopping order item from the database. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to delete
+	* @param shoppingOrderItem the shopping order item
+	* @return the shopping order item that was removed
 	* @throws SystemException if a system exception occurred
 	*/
-	public static void deleteShoppingOrderItem(
+	public static com.liferay.shopping.model.ShoppingOrderItem deleteShoppingOrderItem(
 		com.liferay.shopping.model.ShoppingOrderItem shoppingOrderItem)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		getService().deleteShoppingOrderItem(shoppingOrderItem);
+		return getService().deleteShoppingOrderItem(shoppingOrderItem);
+	}
+
+	public static com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
+		return getService().dynamicQuery();
 	}
 
 	/**
 	* Performs a dynamic query on the database and returns the matching rows.
 	*
-	* @param dynamicQuery the dynamic query to search with
+	* @param dynamicQuery the dynamic query
 	* @return the matching rows
 	* @throws SystemException if a system exception occurred
 	*/
@@ -105,9 +115,9 @@ public class ShoppingOrderItemLocalServiceUtil {
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	* </p>
 	*
-	* @param dynamicQuery the dynamic query to search with
-	* @param start the lower bound of the range of model instances to return
-	* @param end the upper bound of the range of model instances to return (not inclusive)
+	* @param dynamicQuery the dynamic query
+	* @param start the lower bound of the range of model instances
+	* @param end the upper bound of the range of model instances (not inclusive)
 	* @return the range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
@@ -125,10 +135,10 @@ public class ShoppingOrderItemLocalServiceUtil {
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	* </p>
 	*
-	* @param dynamicQuery the dynamic query to search with
-	* @param start the lower bound of the range of model instances to return
-	* @param end the upper bound of the range of model instances to return (not inclusive)
-	* @param orderByComparator the comparator to order the results by
+	* @param dynamicQuery the dynamic query
+	* @param start the lower bound of the range of model instances
+	* @param end the upper bound of the range of model instances (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
@@ -143,9 +153,9 @@ public class ShoppingOrderItemLocalServiceUtil {
 	}
 
 	/**
-	* Counts the number of rows that match the dynamic query.
+	* Returns the number of rows that match the dynamic query.
 	*
-	* @param dynamicQuery the dynamic query to search with
+	* @param dynamicQuery the dynamic query
 	* @return the number of rows that match the dynamic query
 	* @throws SystemException if a system exception occurred
 	*/
@@ -155,10 +165,16 @@ public class ShoppingOrderItemLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery);
 	}
 
+	public static com.liferay.shopping.model.ShoppingOrderItem fetchShoppingOrderItem(
+		long orderItemId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().fetchShoppingOrderItem(orderItemId);
+	}
+
 	/**
-	* Gets the shopping order item with the primary key.
+	* Returns the shopping order item with the primary key.
 	*
-	* @param orderItemId the primary key of the shopping order item to get
+	* @param orderItemId the primary key of the shopping order item
 	* @return the shopping order item
 	* @throws PortalException if a shopping order item with the primary key could not be found
 	* @throws SystemException if a system exception occurred
@@ -170,15 +186,22 @@ public class ShoppingOrderItemLocalServiceUtil {
 		return getService().getShoppingOrderItem(orderItemId);
 	}
 
+	public static com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getPersistedModel(primaryKeyObj);
+	}
+
 	/**
-	* Gets a range of all the shopping order items.
+	* Returns a range of all the shopping order items.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	* </p>
 	*
-	* @param start the lower bound of the range of shopping order items to return
-	* @param end the upper bound of the range of shopping order items to return (not inclusive)
+	* @param start the lower bound of the range of shopping order items
+	* @param end the upper bound of the range of shopping order items (not inclusive)
 	* @return the range of shopping order items
 	* @throws SystemException if a system exception occurred
 	*/
@@ -189,7 +212,7 @@ public class ShoppingOrderItemLocalServiceUtil {
 	}
 
 	/**
-	* Gets the number of shopping order items.
+	* Returns the number of shopping order items.
 	*
 	* @return the number of shopping order items
 	* @throws SystemException if a system exception occurred
@@ -200,9 +223,9 @@ public class ShoppingOrderItemLocalServiceUtil {
 	}
 
 	/**
-	* Updates the shopping order item in the database. Also notifies the appropriate model listeners.
+	* Updates the shopping order item in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to update
+	* @param shoppingOrderItem the shopping order item
 	* @return the shopping order item that was updated
 	* @throws SystemException if a system exception occurred
 	*/
@@ -213,9 +236,9 @@ public class ShoppingOrderItemLocalServiceUtil {
 	}
 
 	/**
-	* Updates the shopping order item in the database. Also notifies the appropriate model listeners.
+	* Updates the shopping order item in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to update
+	* @param shoppingOrderItem the shopping order item
 	* @param merge whether to merge the shopping order item with the current session. See {@link com.liferay.portal.service.persistence.BatchSession#update(com.liferay.portal.kernel.dao.orm.Session, com.liferay.portal.model.BaseModel, boolean)} for an explanation.
 	* @return the shopping order item that was updated
 	* @throws SystemException if a system exception occurred
@@ -225,6 +248,30 @@ public class ShoppingOrderItemLocalServiceUtil {
 		boolean merge)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService().updateShoppingOrderItem(shoppingOrderItem, merge);
+	}
+
+	/**
+	* Returns the Spring bean ID for this bean.
+	*
+	* @return the Spring bean ID for this bean
+	*/
+	public static java.lang.String getBeanIdentifier() {
+		return getService().getBeanIdentifier();
+	}
+
+	/**
+	* Sets the Spring bean ID for this bean.
+	*
+	* @param beanIdentifier the Spring bean ID for this bean
+	*/
+	public static void setBeanIdentifier(java.lang.String beanIdentifier) {
+		getService().setBeanIdentifier(beanIdentifier);
+	}
+
+	public static java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
 	public static java.util.List<com.liferay.shopping.model.ShoppingOrderItem> getOrderItems(
@@ -239,24 +286,27 @@ public class ShoppingOrderItemLocalServiceUtil {
 
 	public static ShoppingOrderItemLocalService getService() {
 		if (_service == null) {
-			Object obj = PortletBeanLocatorUtil.locate(ClpSerializer.SERVLET_CONTEXT_NAME,
+			InvokableLocalService invokableLocalService = (InvokableLocalService)PortletBeanLocatorUtil.locate(ClpSerializer.getServletContextName(),
 					ShoppingOrderItemLocalService.class.getName());
-			ClassLoader portletClassLoader = (ClassLoader)PortletBeanLocatorUtil.locate(ClpSerializer.SERVLET_CONTEXT_NAME,
-					"portletClassLoader");
 
-			ClassLoaderProxy classLoaderProxy = new ClassLoaderProxy(obj,
-					portletClassLoader);
+			if (invokableLocalService instanceof ShoppingOrderItemLocalService) {
+				_service = (ShoppingOrderItemLocalService)invokableLocalService;
+			}
+			else {
+				_service = new ShoppingOrderItemLocalServiceClp(invokableLocalService);
+			}
 
-			_service = new ShoppingOrderItemLocalServiceClp(classLoaderProxy);
-
-			ClpSerializer.setClassLoader(portletClassLoader);
+			ReferenceRegistry.registerReference(ShoppingOrderItemLocalServiceUtil.class,
+				"_service");
 		}
 
 		return _service;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public void setService(ShoppingOrderItemLocalService service) {
-		_service = service;
 	}
 
 	private static ShoppingOrderItemLocalService _service;

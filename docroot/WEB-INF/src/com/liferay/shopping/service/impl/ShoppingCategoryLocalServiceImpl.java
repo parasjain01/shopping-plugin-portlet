@@ -70,18 +70,18 @@ public class ShoppingCategoryLocalServiceImpl
 
 		// Resources
 
-		if (serviceContext.getAddCommunityPermissions() ||
-			serviceContext.getAddGuestPermissions()) {
-
-			addCategoryResources(
-				category, serviceContext.getAddCommunityPermissions(),
-				serviceContext.getAddGuestPermissions());
-		}
-		else {
-			addCategoryResources(
-				category, serviceContext.getCommunityPermissions(),
-				serviceContext.getGuestPermissions());
-		}
+//		if (serviceContext.getAddCommunityPermissions() ||
+//			serviceContext.getAddGuestPermissions()) {
+//
+//			addCategoryResources(
+//				category, serviceContext.getAddCommunityPermissions(),
+//				serviceContext.getAddGuestPermissions());
+//		}
+//		else {
+//			addCategoryResources(
+//				category, serviceContext.getCommunityPermissions(),
+//				serviceContext.getGuestPermissions());
+//		}
 
 		return category;
 	}

@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 // import com.liferay.portal.kernel.util.SystemProperties;
-import com.liferay.util.SystemProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.User;
@@ -173,11 +172,11 @@ public class ShoppingItemLocalServiceImpl
 		// Resources
 
 		if (serviceContext.getAddCommunityPermissions() ||
-			serviceContext.getAddGuestPermissions()) {
+			serviceContext.getAddCommunityPermissions()) {
 
 			addItemResources(
 				item, serviceContext.getAddCommunityPermissions(),
-				serviceContext.getAddGuestPermissions());
+				serviceContext.getAddCommunityPermissions());
 		}
 		else {
 			addItemResources(

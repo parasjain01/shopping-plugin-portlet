@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,8 @@
 
 package com.liferay.shopping.service;
 
+import com.liferay.portal.service.ServiceWrapper;
+
 /**
  * <p>
  * This class is a wrapper for {@link ShoppingOrderItemLocalService}.
@@ -24,7 +26,8 @@ package com.liferay.shopping.service;
  * @generated
  */
 public class ShoppingOrderItemLocalServiceWrapper
-	implements ShoppingOrderItemLocalService {
+	implements ShoppingOrderItemLocalService,
+		ServiceWrapper<ShoppingOrderItemLocalService> {
 	public ShoppingOrderItemLocalServiceWrapper(
 		ShoppingOrderItemLocalService shoppingOrderItemLocalService) {
 		_shoppingOrderItemLocalService = shoppingOrderItemLocalService;
@@ -33,7 +36,7 @@ public class ShoppingOrderItemLocalServiceWrapper
 	/**
 	* Adds the shopping order item to the database. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to add
+	* @param shoppingOrderItem the shopping order item
 	* @return the shopping order item that was added
 	* @throws SystemException if a system exception occurred
 	*/
@@ -57,32 +60,39 @@ public class ShoppingOrderItemLocalServiceWrapper
 	/**
 	* Deletes the shopping order item with the primary key from the database. Also notifies the appropriate model listeners.
 	*
-	* @param orderItemId the primary key of the shopping order item to delete
+	* @param orderItemId the primary key of the shopping order item
+	* @return the shopping order item that was removed
 	* @throws PortalException if a shopping order item with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
-	public void deleteShoppingOrderItem(long orderItemId)
+	public com.liferay.shopping.model.ShoppingOrderItem deleteShoppingOrderItem(
+		long orderItemId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		_shoppingOrderItemLocalService.deleteShoppingOrderItem(orderItemId);
+		return _shoppingOrderItemLocalService.deleteShoppingOrderItem(orderItemId);
 	}
 
 	/**
 	* Deletes the shopping order item from the database. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to delete
+	* @param shoppingOrderItem the shopping order item
+	* @return the shopping order item that was removed
 	* @throws SystemException if a system exception occurred
 	*/
-	public void deleteShoppingOrderItem(
+	public com.liferay.shopping.model.ShoppingOrderItem deleteShoppingOrderItem(
 		com.liferay.shopping.model.ShoppingOrderItem shoppingOrderItem)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		_shoppingOrderItemLocalService.deleteShoppingOrderItem(shoppingOrderItem);
+		return _shoppingOrderItemLocalService.deleteShoppingOrderItem(shoppingOrderItem);
+	}
+
+	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
+		return _shoppingOrderItemLocalService.dynamicQuery();
 	}
 
 	/**
 	* Performs a dynamic query on the database and returns the matching rows.
 	*
-	* @param dynamicQuery the dynamic query to search with
+	* @param dynamicQuery the dynamic query
 	* @return the matching rows
 	* @throws SystemException if a system exception occurred
 	*/
@@ -100,9 +110,9 @@ public class ShoppingOrderItemLocalServiceWrapper
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	* </p>
 	*
-	* @param dynamicQuery the dynamic query to search with
-	* @param start the lower bound of the range of model instances to return
-	* @param end the upper bound of the range of model instances to return (not inclusive)
+	* @param dynamicQuery the dynamic query
+	* @param start the lower bound of the range of model instances
+	* @param end the upper bound of the range of model instances (not inclusive)
 	* @return the range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
@@ -121,10 +131,10 @@ public class ShoppingOrderItemLocalServiceWrapper
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	* </p>
 	*
-	* @param dynamicQuery the dynamic query to search with
-	* @param start the lower bound of the range of model instances to return
-	* @param end the upper bound of the range of model instances to return (not inclusive)
-	* @param orderByComparator the comparator to order the results by
+	* @param dynamicQuery the dynamic query
+	* @param start the lower bound of the range of model instances
+	* @param end the upper bound of the range of model instances (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	* @return the ordered range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
@@ -139,9 +149,9 @@ public class ShoppingOrderItemLocalServiceWrapper
 	}
 
 	/**
-	* Counts the number of rows that match the dynamic query.
+	* Returns the number of rows that match the dynamic query.
 	*
-	* @param dynamicQuery the dynamic query to search with
+	* @param dynamicQuery the dynamic query
 	* @return the number of rows that match the dynamic query
 	* @throws SystemException if a system exception occurred
 	*/
@@ -151,10 +161,16 @@ public class ShoppingOrderItemLocalServiceWrapper
 		return _shoppingOrderItemLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
+	public com.liferay.shopping.model.ShoppingOrderItem fetchShoppingOrderItem(
+		long orderItemId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _shoppingOrderItemLocalService.fetchShoppingOrderItem(orderItemId);
+	}
+
 	/**
-	* Gets the shopping order item with the primary key.
+	* Returns the shopping order item with the primary key.
 	*
-	* @param orderItemId the primary key of the shopping order item to get
+	* @param orderItemId the primary key of the shopping order item
 	* @return the shopping order item
 	* @throws PortalException if a shopping order item with the primary key could not be found
 	* @throws SystemException if a system exception occurred
@@ -166,15 +182,22 @@ public class ShoppingOrderItemLocalServiceWrapper
 		return _shoppingOrderItemLocalService.getShoppingOrderItem(orderItemId);
 	}
 
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _shoppingOrderItemLocalService.getPersistedModel(primaryKeyObj);
+	}
+
 	/**
-	* Gets a range of all the shopping order items.
+	* Returns a range of all the shopping order items.
 	*
 	* <p>
 	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	* </p>
 	*
-	* @param start the lower bound of the range of shopping order items to return
-	* @param end the upper bound of the range of shopping order items to return (not inclusive)
+	* @param start the lower bound of the range of shopping order items
+	* @param end the upper bound of the range of shopping order items (not inclusive)
 	* @return the range of shopping order items
 	* @throws SystemException if a system exception occurred
 	*/
@@ -185,7 +208,7 @@ public class ShoppingOrderItemLocalServiceWrapper
 	}
 
 	/**
-	* Gets the number of shopping order items.
+	* Returns the number of shopping order items.
 	*
 	* @return the number of shopping order items
 	* @throws SystemException if a system exception occurred
@@ -196,9 +219,9 @@ public class ShoppingOrderItemLocalServiceWrapper
 	}
 
 	/**
-	* Updates the shopping order item in the database. Also notifies the appropriate model listeners.
+	* Updates the shopping order item in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to update
+	* @param shoppingOrderItem the shopping order item
 	* @return the shopping order item that was updated
 	* @throws SystemException if a system exception occurred
 	*/
@@ -209,9 +232,9 @@ public class ShoppingOrderItemLocalServiceWrapper
 	}
 
 	/**
-	* Updates the shopping order item in the database. Also notifies the appropriate model listeners.
+	* Updates the shopping order item in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
-	* @param shoppingOrderItem the shopping order item to update
+	* @param shoppingOrderItem the shopping order item
 	* @param merge whether to merge the shopping order item with the current session. See {@link com.liferay.portal.service.persistence.BatchSession#update(com.liferay.portal.kernel.dao.orm.Session, com.liferay.portal.model.BaseModel, boolean)} for an explanation.
 	* @return the shopping order item that was updated
 	* @throws SystemException if a system exception occurred
@@ -224,14 +247,59 @@ public class ShoppingOrderItemLocalServiceWrapper
 			merge);
 	}
 
+	/**
+	* Returns the Spring bean ID for this bean.
+	*
+	* @return the Spring bean ID for this bean
+	*/
+	public java.lang.String getBeanIdentifier() {
+		return _shoppingOrderItemLocalService.getBeanIdentifier();
+	}
+
+	/**
+	* Sets the Spring bean ID for this bean.
+	*
+	* @param beanIdentifier the Spring bean ID for this bean
+	*/
+	public void setBeanIdentifier(java.lang.String beanIdentifier) {
+		_shoppingOrderItemLocalService.setBeanIdentifier(beanIdentifier);
+	}
+
+	public java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		return _shoppingOrderItemLocalService.invokeMethod(name,
+			parameterTypes, arguments);
+	}
+
 	public java.util.List<com.liferay.shopping.model.ShoppingOrderItem> getOrderItems(
 		long orderId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _shoppingOrderItemLocalService.getOrderItems(orderId);
 	}
 
+	/**
+	 * @deprecated Renamed to {@link #getWrappedService}
+	 */
 	public ShoppingOrderItemLocalService getWrappedShoppingOrderItemLocalService() {
 		return _shoppingOrderItemLocalService;
+	}
+
+	/**
+	 * @deprecated Renamed to {@link #setWrappedService}
+	 */
+	public void setWrappedShoppingOrderItemLocalService(
+		ShoppingOrderItemLocalService shoppingOrderItemLocalService) {
+		_shoppingOrderItemLocalService = shoppingOrderItemLocalService;
+	}
+
+	public ShoppingOrderItemLocalService getWrappedService() {
+		return _shoppingOrderItemLocalService;
+	}
+
+	public void setWrappedService(
+		ShoppingOrderItemLocalService shoppingOrderItemLocalService) {
+		_shoppingOrderItemLocalService = shoppingOrderItemLocalService;
 	}
 
 	private ShoppingOrderItemLocalService _shoppingOrderItemLocalService;

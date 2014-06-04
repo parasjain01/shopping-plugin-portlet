@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,16 +14,230 @@
 
 package com.liferay.shopping.service;
 
-import com.liferay.portal.kernel.util.ClassLoaderProxy;
-import com.liferay.portal.kernel.util.MethodHandler;
-import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.service.InvokableLocalService;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
-	public ShoppingItemLocalServiceClp(ClassLoaderProxy classLoaderProxy) {
-		_classLoaderProxy = classLoaderProxy;
+	public ShoppingItemLocalServiceClp(
+		InvokableLocalService invokableLocalService) {
+		_invokableLocalService = invokableLocalService;
+
+		_methodName0 = "addShoppingItem";
+
+		_methodParameterTypes0 = new String[] {
+				"com.liferay.shopping.model.ShoppingItem"
+			};
+
+		_methodName1 = "createShoppingItem";
+
+		_methodParameterTypes1 = new String[] { "long" };
+
+		_methodName2 = "deleteShoppingItem";
+
+		_methodParameterTypes2 = new String[] { "long" };
+
+		_methodName3 = "deleteShoppingItem";
+
+		_methodParameterTypes3 = new String[] {
+				"com.liferay.shopping.model.ShoppingItem"
+			};
+
+		_methodName4 = "dynamicQuery";
+
+		_methodParameterTypes4 = new String[] {  };
+
+		_methodName5 = "dynamicQuery";
+
+		_methodParameterTypes5 = new String[] {
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
+			};
+
+		_methodName6 = "dynamicQuery";
+
+		_methodParameterTypes6 = new String[] {
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery", "int", "int"
+			};
+
+		_methodName7 = "dynamicQuery";
+
+		_methodParameterTypes7 = new String[] {
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery", "int", "int",
+				"com.liferay.portal.kernel.util.OrderByComparator"
+			};
+
+		_methodName8 = "dynamicQueryCount";
+
+		_methodParameterTypes8 = new String[] {
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
+			};
+
+		_methodName9 = "fetchShoppingItem";
+
+		_methodParameterTypes9 = new String[] { "long" };
+
+		_methodName10 = "getShoppingItem";
+
+		_methodParameterTypes10 = new String[] { "long" };
+
+		_methodName11 = "getPersistedModel";
+
+		_methodParameterTypes11 = new String[] { "java.io.Serializable" };
+
+		_methodName12 = "getShoppingItems";
+
+		_methodParameterTypes12 = new String[] { "int", "int" };
+
+		_methodName13 = "getShoppingItemsCount";
+
+		_methodParameterTypes13 = new String[] {  };
+
+		_methodName14 = "updateShoppingItem";
+
+		_methodParameterTypes14 = new String[] {
+				"com.liferay.shopping.model.ShoppingItem"
+			};
+
+		_methodName15 = "updateShoppingItem";
+
+		_methodParameterTypes15 = new String[] {
+				"com.liferay.shopping.model.ShoppingItem", "boolean"
+			};
+
+		_methodName16 = "getBeanIdentifier";
+
+		_methodParameterTypes16 = new String[] {  };
+
+		_methodName17 = "setBeanIdentifier";
+
+		_methodParameterTypes17 = new String[] { "java.lang.String" };
+
+		_methodName19 = "addItem";
+
+		_methodParameterTypes19 = new String[] {
+				"long", "long", "long", "java.lang.String", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"boolean", "int", "boolean", "java.lang.Boolean", "boolean",
+				"java.lang.String", "java.io.File", "boolean",
+				"java.lang.String", "java.io.File", "boolean",
+				"java.lang.String", "java.io.File", "java.util.List",
+				"java.util.List", "com.liferay.portal.service.ServiceContext"
+			};
+
+		_methodName20 = "addItemResources";
+
+		_methodParameterTypes20 = new String[] { "long", "boolean", "boolean" };
+
+		_methodName21 = "addItemResources";
+
+		_methodParameterTypes21 = new String[] {
+				"long", "java.lang.String[][]", "java.lang.String[][]"
+			};
+
+		_methodName22 = "addItemResources";
+
+		_methodParameterTypes22 = new String[] {
+				"com.liferay.shopping.model.ShoppingItem", "boolean", "boolean"
+			};
+
+		_methodName23 = "addItemResources";
+
+		_methodParameterTypes23 = new String[] {
+				"com.liferay.shopping.model.ShoppingItem",
+				"java.lang.String[][]", "java.lang.String[][]"
+			};
+
+		_methodName24 = "deleteItem";
+
+		_methodParameterTypes24 = new String[] { "long" };
+
+		_methodName25 = "deleteItem";
+
+		_methodParameterTypes25 = new String[] {
+				"com.liferay.shopping.model.ShoppingItem"
+			};
+
+		_methodName26 = "deleteItems";
+
+		_methodParameterTypes26 = new String[] { "long", "long" };
+
+		_methodName27 = "getCategoriesItemsCount";
+
+		_methodParameterTypes27 = new String[] { "long", "java.util.List" };
+
+		_methodName28 = "getFeaturedItems";
+
+		_methodParameterTypes28 = new String[] { "long", "long", "int" };
+
+		_methodName29 = "getItem";
+
+		_methodParameterTypes29 = new String[] { "long" };
+
+		_methodName30 = "getItem";
+
+		_methodParameterTypes30 = new String[] { "long", "java.lang.String" };
+
+		_methodName31 = "getItemByLargeImageId";
+
+		_methodParameterTypes31 = new String[] { "long" };
+
+		_methodName32 = "getItemByMediumImageId";
+
+		_methodParameterTypes32 = new String[] { "long" };
+
+		_methodName33 = "getItemBySmallImageId";
+
+		_methodParameterTypes33 = new String[] { "long" };
+
+		_methodName34 = "getItems";
+
+		_methodParameterTypes34 = new String[] { "long", "long" };
+
+		_methodName35 = "getItems";
+
+		_methodParameterTypes35 = new String[] {
+				"long", "long", "int", "int",
+				"com.liferay.portal.kernel.util.OrderByComparator"
+			};
+
+		_methodName36 = "getItemsCount";
+
+		_methodParameterTypes36 = new String[] { "long", "long" };
+
+		_methodName37 = "getItemsPrevAndNext";
+
+		_methodParameterTypes37 = new String[] {
+				"long", "com.liferay.portal.kernel.util.OrderByComparator"
+			};
+
+		_methodName38 = "getSaleItems";
+
+		_methodParameterTypes38 = new String[] { "long", "long", "int" };
+
+		_methodName39 = "search";
+
+		_methodParameterTypes39 = new String[] {
+				"long", "long[][]", "java.lang.String", "int", "int"
+			};
+
+		_methodName40 = "searchCount";
+
+		_methodParameterTypes40 = new String[] {
+				"long", "long[][]", "java.lang.String"
+			};
+
+		_methodName41 = "updateItem";
+
+		_methodParameterTypes41 = new String[] {
+				"long", "long", "long", "long", "java.lang.String",
+				"java.lang.String", "java.lang.String", "java.lang.String",
+				"java.lang.String", "boolean", "int", "boolean",
+				"java.lang.Boolean", "boolean", "java.lang.String",
+				"java.io.File", "boolean", "java.lang.String", "java.io.File",
+				"boolean", "java.lang.String", "java.io.File", "java.util.List",
+				"java.util.List", "com.liferay.portal.service.ServiceContext"
+			};
 	}
 
 	public com.liferay.shopping.model.ShoppingItem addShoppingItem(
@@ -31,13 +245,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_addShoppingItemMethodKey0,
-				shoppingItem);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName0,
+					_methodParameterTypes0,
+					new Object[] { ClpSerializer.translateInput(shoppingItem) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -58,13 +273,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		long itemId) {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_createShoppingItemMethodKey1,
-				itemId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName1,
+					_methodParameterTypes1, new Object[] { itemId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
 			}
@@ -77,16 +292,19 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		return (com.liferay.shopping.model.ShoppingItem)ClpSerializer.translateOutput(returnObj);
 	}
 
-	public void deleteShoppingItem(long itemId)
+	public com.liferay.shopping.model.ShoppingItem deleteShoppingItem(
+		long itemId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_deleteShoppingItemMethodKey2,
-				itemId);
+		Object returnObj = null;
 
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName2,
+					_methodParameterTypes2, new Object[] { itemId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -103,18 +321,23 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 					" is not a valid exception");
 			}
 		}
+
+		return (com.liferay.shopping.model.ShoppingItem)ClpSerializer.translateOutput(returnObj);
 	}
 
-	public void deleteShoppingItem(
+	public com.liferay.shopping.model.ShoppingItem deleteShoppingItem(
 		com.liferay.shopping.model.ShoppingItem shoppingItem)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_deleteShoppingItemMethodKey3,
-				shoppingItem);
+		Object returnObj = null;
 
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName3,
+					_methodParameterTypes3,
+					new Object[] { ClpSerializer.translateInput(shoppingItem) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -127,6 +350,30 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 					" is not a valid exception");
 			}
 		}
+
+		return (com.liferay.shopping.model.ShoppingItem)ClpSerializer.translateOutput(returnObj);
+	}
+
+	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName4,
+					_methodParameterTypes4, new Object[] {  });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.portal.kernel.dao.orm.DynamicQuery)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -135,13 +382,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_dynamicQueryMethodKey4,
-				dynamicQuery);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName5,
+					_methodParameterTypes5,
+					new Object[] { ClpSerializer.translateInput(dynamicQuery) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -164,13 +412,20 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		int end) throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_dynamicQueryMethodKey5,
-				dynamicQuery, start, end);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName6,
+					_methodParameterTypes6,
+					new Object[] {
+						ClpSerializer.translateInput(dynamicQuery),
+						
+					start,
+						
+					end
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -195,13 +450,22 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_dynamicQueryMethodKey6,
-				dynamicQuery, start, end, orderByComparator);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName7,
+					_methodParameterTypes7,
+					new Object[] {
+						ClpSerializer.translateInput(dynamicQuery),
+						
+					start,
+						
+					end,
+						
+					ClpSerializer.translateInput(orderByComparator)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -223,13 +487,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_dynamicQueryCountMethodKey7,
-				dynamicQuery);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName8,
+					_methodParameterTypes8,
+					new Object[] { ClpSerializer.translateInput(dynamicQuery) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -246,18 +511,45 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		return ((Long)returnObj).longValue();
 	}
 
+	public com.liferay.shopping.model.ShoppingItem fetchShoppingItem(
+		long itemId) throws com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName9,
+					_methodParameterTypes9, new Object[] { itemId });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.shopping.model.ShoppingItem)ClpSerializer.translateOutput(returnObj);
+	}
+
 	public com.liferay.shopping.model.ShoppingItem getShoppingItem(long itemId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getShoppingItemMethodKey8,
-				itemId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName10,
+					_methodParameterTypes10, new Object[] { itemId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -278,18 +570,52 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		return (com.liferay.shopping.model.ShoppingItem)ClpSerializer.translateOutput(returnObj);
 	}
 
+	public com.liferay.portal.model.PersistedModel getPersistedModel(
+		java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName11,
+					_methodParameterTypes11,
+					new Object[] { ClpSerializer.translateInput(primaryKeyObj) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
+				throw (com.liferay.portal.kernel.exception.PortalException)t;
+			}
+
+			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
+				throw (com.liferay.portal.kernel.exception.SystemException)t;
+			}
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (com.liferay.portal.model.PersistedModel)ClpSerializer.translateOutput(returnObj);
+	}
+
 	public java.util.List<com.liferay.shopping.model.ShoppingItem> getShoppingItems(
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getShoppingItemsMethodKey9,
-				start, end);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName12,
+					_methodParameterTypes12, new Object[] { start, end });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -310,12 +636,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getShoppingItemsCountMethodKey10);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName13,
+					_methodParameterTypes13, new Object[] {  });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -337,13 +664,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_updateShoppingItemMethodKey11,
-				shoppingItem);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName14,
+					_methodParameterTypes14,
+					new Object[] { ClpSerializer.translateInput(shoppingItem) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -365,13 +693,18 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_updateShoppingItemMethodKey12,
-				shoppingItem, merge);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName15,
+					_methodParameterTypes15,
+					new Object[] {
+						ClpSerializer.translateInput(shoppingItem),
+						
+					merge
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -386,6 +719,53 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		}
 
 		return (com.liferay.shopping.model.ShoppingItem)ClpSerializer.translateOutput(returnObj);
+	}
+
+	public java.lang.String getBeanIdentifier() {
+		Object returnObj = null;
+
+		try {
+			returnObj = _invokableLocalService.invokeMethod(_methodName16,
+					_methodParameterTypes16, new Object[] {  });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+
+		return (java.lang.String)ClpSerializer.translateOutput(returnObj);
+	}
+
+	public void setBeanIdentifier(java.lang.String beanIdentifier) {
+		try {
+			_invokableLocalService.invokeMethod(_methodName17,
+				_methodParameterTypes17,
+				new Object[] { ClpSerializer.translateInput(beanIdentifier) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+	}
+
+	public java.lang.Object invokeMethod(java.lang.String name,
+		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
+		throws java.lang.Throwable {
+		throw new UnsupportedOperationException();
 	}
 
 	public com.liferay.shopping.model.ShoppingItem addItem(long userId,
@@ -406,17 +786,62 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			java.lang.Exception {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_addItemMethodKey13,
-				userId, groupId, categoryId, sku, name, description,
-				properties, fieldsQuantities, requiresShipping, stockQuantity,
-				featured, sale, smallImage, smallImageURL, smallFile,
-				mediumImage, mediumImageURL, mediumFile, largeImage,
-				largeImageURL, largeFile, itemFields, itemPrices, serviceContext);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName19,
+					_methodParameterTypes19,
+					new Object[] {
+						userId,
+						
+					groupId,
+						
+					categoryId,
+						
+					ClpSerializer.translateInput(sku),
+						
+					ClpSerializer.translateInput(name),
+						
+					ClpSerializer.translateInput(description),
+						
+					ClpSerializer.translateInput(properties),
+						
+					ClpSerializer.translateInput(fieldsQuantities),
+						
+					requiresShipping,
+						
+					stockQuantity,
+						
+					featured,
+						
+					ClpSerializer.translateInput(sale),
+						
+					smallImage,
+						
+					ClpSerializer.translateInput(smallImageURL),
+						
+					ClpSerializer.translateInput(smallFile),
+						
+					mediumImage,
+						
+					ClpSerializer.translateInput(mediumImageURL),
+						
+					ClpSerializer.translateInput(mediumFile),
+						
+					largeImage,
+						
+					ClpSerializer.translateInput(largeImageURL),
+						
+					ClpSerializer.translateInput(largeFile),
+						
+					ClpSerializer.translateInput(itemFields),
+						
+					ClpSerializer.translateInput(itemPrices),
+						
+					ClpSerializer.translateInput(serviceContext)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -445,13 +870,20 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		boolean addGuestPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_addItemResourcesMethodKey14,
-				itemId, addCommunityPermissions, addGuestPermissions);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableLocalService.invokeMethod(_methodName20,
+				_methodParameterTypes20,
+				new Object[] {
+					itemId,
+					
+				addCommunityPermissions,
+					
+				addGuestPermissions
+				});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -475,13 +907,20 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		java.lang.String[] guestPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_addItemResourcesMethodKey15,
-				itemId, communityPermissions, guestPermissions);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableLocalService.invokeMethod(_methodName21,
+				_methodParameterTypes21,
+				new Object[] {
+					itemId,
+					
+				ClpSerializer.translateInput(communityPermissions),
+					
+				ClpSerializer.translateInput(guestPermissions)
+				});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -504,13 +943,20 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		boolean addCommunityPermissions, boolean addGuestPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_addItemResourcesMethodKey16,
-				item, addCommunityPermissions, addGuestPermissions);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableLocalService.invokeMethod(_methodName22,
+				_methodParameterTypes22,
+				new Object[] {
+					ClpSerializer.translateInput(item),
+					
+				addCommunityPermissions,
+					
+				addGuestPermissions
+				});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -534,13 +980,20 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		java.lang.String[] guestPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_addItemResourcesMethodKey17,
-				item, communityPermissions, guestPermissions);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableLocalService.invokeMethod(_methodName23,
+				_methodParameterTypes23,
+				new Object[] {
+					ClpSerializer.translateInput(item),
+					
+				ClpSerializer.translateInput(communityPermissions),
+					
+				ClpSerializer.translateInput(guestPermissions)
+				});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -562,13 +1015,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 	public void deleteItem(long itemId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_deleteItemMethodKey18,
-				itemId);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableLocalService.invokeMethod(_methodName24,
+				_methodParameterTypes24, new Object[] { itemId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -590,13 +1043,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 	public void deleteItem(com.liferay.shopping.model.ShoppingItem item)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_deleteItemMethodKey19,
-				item);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableLocalService.invokeMethod(_methodName25,
+				_methodParameterTypes25,
+				new Object[] { ClpSerializer.translateInput(item) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -618,13 +1072,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 	public void deleteItems(long groupId, long categoryId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		MethodHandler methodHandler = new MethodHandler(_deleteItemsMethodKey20,
-				groupId, categoryId);
-
 		try {
-			_classLoaderProxy.invoke(methodHandler);
+			_invokableLocalService.invokeMethod(_methodName26,
+				_methodParameterTypes26, new Object[] { groupId, categoryId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -648,13 +1102,18 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getCategoriesItemsCountMethodKey21,
-				groupId, categoryIds);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName27,
+					_methodParameterTypes27,
+					new Object[] {
+						groupId,
+						
+					ClpSerializer.translateInput(categoryIds)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -676,13 +1135,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getFeaturedItemsMethodKey22,
-				groupId, categoryId, numOfItems);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName28,
+					_methodParameterTypes28,
+					new Object[] { groupId, categoryId, numOfItems });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -704,13 +1164,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemMethodKey23,
-				itemId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName29,
+					_methodParameterTypes29, new Object[] { itemId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -737,13 +1197,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemMethodKey24,
-				companyId, sku);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName30,
+					_methodParameterTypes30,
+					new Object[] { companyId, ClpSerializer.translateInput(sku) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -770,13 +1231,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemByLargeImageIdMethodKey25,
-				largeImageId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName31,
+					_methodParameterTypes31, new Object[] { largeImageId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -803,13 +1264,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemByMediumImageIdMethodKey26,
-				mediumImageId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName32,
+					_methodParameterTypes32, new Object[] { mediumImageId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -836,13 +1297,13 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemBySmallImageIdMethodKey27,
-				smallImageId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName33,
+					_methodParameterTypes33, new Object[] { smallImageId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -868,13 +1329,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemsMethodKey28,
-				groupId, categoryId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName34,
+					_methodParameterTypes34,
+					new Object[] { groupId, categoryId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -897,13 +1359,24 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemsMethodKey29,
-				groupId, categoryId, start, end, obc);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName35,
+					_methodParameterTypes35,
+					new Object[] {
+						groupId,
+						
+					categoryId,
+						
+					start,
+						
+					end,
+						
+					ClpSerializer.translateInput(obc)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -924,13 +1397,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemsCountMethodKey30,
-				groupId, categoryId);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName36,
+					_methodParameterTypes36,
+					new Object[] { groupId, categoryId });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -953,13 +1427,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getItemsPrevAndNextMethodKey31,
-				itemId, obc);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName37,
+					_methodParameterTypes37,
+					new Object[] { itemId, ClpSerializer.translateInput(obc) });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -985,13 +1460,14 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_getSaleItemsMethodKey32,
-				groupId, categoryId, numOfItems);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName38,
+					_methodParameterTypes38,
+					new Object[] { groupId, categoryId, numOfItems });
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -1013,13 +1489,24 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		int end) throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_searchMethodKey33,
-				groupId, categoryIds, keywords, start, end);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName39,
+					_methodParameterTypes39,
+					new Object[] {
+						groupId,
+						
+					ClpSerializer.translateInput(categoryIds),
+						
+					ClpSerializer.translateInput(keywords),
+						
+					start,
+						
+					end
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -1041,13 +1528,20 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_searchCountMethodKey34,
-				groupId, categoryIds, keywords);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName40,
+					_methodParameterTypes40,
+					new Object[] {
+						groupId,
+						
+					ClpSerializer.translateInput(categoryIds),
+						
+					ClpSerializer.translateInput(keywords)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
 				throw (com.liferay.portal.kernel.exception.SystemException)t;
 			}
@@ -1082,17 +1576,64 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 			java.lang.Exception {
 		Object returnObj = null;
 
-		MethodHandler methodHandler = new MethodHandler(_updateItemMethodKey35,
-				userId, itemId, groupId, categoryId, sku, name, description,
-				properties, fieldsQuantities, requiresShipping, stockQuantity,
-				featured, sale, smallImage, smallImageURL, smallFile,
-				mediumImage, mediumImageURL, mediumFile, largeImage,
-				largeImageURL, largeFile, itemFields, itemPrices, serviceContext);
-
 		try {
-			returnObj = _classLoaderProxy.invoke(methodHandler);
+			returnObj = _invokableLocalService.invokeMethod(_methodName41,
+					_methodParameterTypes41,
+					new Object[] {
+						userId,
+						
+					itemId,
+						
+					groupId,
+						
+					categoryId,
+						
+					ClpSerializer.translateInput(sku),
+						
+					ClpSerializer.translateInput(name),
+						
+					ClpSerializer.translateInput(description),
+						
+					ClpSerializer.translateInput(properties),
+						
+					ClpSerializer.translateInput(fieldsQuantities),
+						
+					requiresShipping,
+						
+					stockQuantity,
+						
+					featured,
+						
+					ClpSerializer.translateInput(sale),
+						
+					smallImage,
+						
+					ClpSerializer.translateInput(smallImageURL),
+						
+					ClpSerializer.translateInput(smallFile),
+						
+					mediumImage,
+						
+					ClpSerializer.translateInput(mediumImageURL),
+						
+					ClpSerializer.translateInput(mediumFile),
+						
+					largeImage,
+						
+					ClpSerializer.translateInput(largeImageURL),
+						
+					ClpSerializer.translateInput(largeFile),
+						
+					ClpSerializer.translateInput(itemFields),
+						
+					ClpSerializer.translateInput(itemPrices),
+						
+					ClpSerializer.translateInput(serviceContext)
+					});
 		}
 		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
 			if (t instanceof com.liferay.portal.kernel.exception.PortalException) {
 				throw (com.liferay.portal.kernel.exception.PortalException)t;
 			}
@@ -1117,109 +1658,87 @@ public class ShoppingItemLocalServiceClp implements ShoppingItemLocalService {
 		return (com.liferay.shopping.model.ShoppingItem)ClpSerializer.translateOutput(returnObj);
 	}
 
-	public ClassLoaderProxy getClassLoaderProxy() {
-		return _classLoaderProxy;
-	}
-
-	private ClassLoaderProxy _classLoaderProxy;
-	private MethodKey _addShoppingItemMethodKey0 = new MethodKey(_classLoaderProxy.getClassName(),
-			"addShoppingItem", com.liferay.shopping.model.ShoppingItem.class);
-	private MethodKey _createShoppingItemMethodKey1 = new MethodKey(_classLoaderProxy.getClassName(),
-			"createShoppingItem", long.class);
-	private MethodKey _deleteShoppingItemMethodKey2 = new MethodKey(_classLoaderProxy.getClassName(),
-			"deleteShoppingItem", long.class);
-	private MethodKey _deleteShoppingItemMethodKey3 = new MethodKey(_classLoaderProxy.getClassName(),
-			"deleteShoppingItem", com.liferay.shopping.model.ShoppingItem.class);
-	private MethodKey _dynamicQueryMethodKey4 = new MethodKey(_classLoaderProxy.getClassName(),
-			"dynamicQuery", com.liferay.portal.kernel.dao.orm.DynamicQuery.class);
-	private MethodKey _dynamicQueryMethodKey5 = new MethodKey(_classLoaderProxy.getClassName(),
-			"dynamicQuery",
-			com.liferay.portal.kernel.dao.orm.DynamicQuery.class, int.class,
-			int.class);
-	private MethodKey _dynamicQueryMethodKey6 = new MethodKey(_classLoaderProxy.getClassName(),
-			"dynamicQuery",
-			com.liferay.portal.kernel.dao.orm.DynamicQuery.class, int.class,
-			int.class, com.liferay.portal.kernel.util.OrderByComparator.class);
-	private MethodKey _dynamicQueryCountMethodKey7 = new MethodKey(_classLoaderProxy.getClassName(),
-			"dynamicQueryCount",
-			com.liferay.portal.kernel.dao.orm.DynamicQuery.class);
-	private MethodKey _getShoppingItemMethodKey8 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getShoppingItem", long.class);
-	private MethodKey _getShoppingItemsMethodKey9 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getShoppingItems", int.class, int.class);
-	private MethodKey _getShoppingItemsCountMethodKey10 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getShoppingItemsCount");
-	private MethodKey _updateShoppingItemMethodKey11 = new MethodKey(_classLoaderProxy.getClassName(),
-			"updateShoppingItem", com.liferay.shopping.model.ShoppingItem.class);
-	private MethodKey _updateShoppingItemMethodKey12 = new MethodKey(_classLoaderProxy.getClassName(),
-			"updateShoppingItem",
-			com.liferay.shopping.model.ShoppingItem.class, boolean.class);
-	private MethodKey _addItemMethodKey13 = new MethodKey(_classLoaderProxy.getClassName(),
-			"addItem", long.class, long.class, long.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, boolean.class, int.class, boolean.class,
-			java.lang.Boolean.class, boolean.class, java.lang.String.class,
-			java.io.File.class, boolean.class, java.lang.String.class,
-			java.io.File.class, boolean.class, java.lang.String.class,
-			java.io.File.class, java.util.List.class, java.util.List.class,
-			com.liferay.portal.service.ServiceContext.class);
-	private MethodKey _addItemResourcesMethodKey14 = new MethodKey(_classLoaderProxy.getClassName(),
-			"addItemResources", long.class, boolean.class, boolean.class);
-	private MethodKey _addItemResourcesMethodKey15 = new MethodKey(_classLoaderProxy.getClassName(),
-			"addItemResources", long.class, java.lang.String[].class,
-			java.lang.String[].class);
-	private MethodKey _addItemResourcesMethodKey16 = new MethodKey(_classLoaderProxy.getClassName(),
-			"addItemResources", com.liferay.shopping.model.ShoppingItem.class,
-			boolean.class, boolean.class);
-	private MethodKey _addItemResourcesMethodKey17 = new MethodKey(_classLoaderProxy.getClassName(),
-			"addItemResources", com.liferay.shopping.model.ShoppingItem.class,
-			java.lang.String[].class, java.lang.String[].class);
-	private MethodKey _deleteItemMethodKey18 = new MethodKey(_classLoaderProxy.getClassName(),
-			"deleteItem", long.class);
-	private MethodKey _deleteItemMethodKey19 = new MethodKey(_classLoaderProxy.getClassName(),
-			"deleteItem", com.liferay.shopping.model.ShoppingItem.class);
-	private MethodKey _deleteItemsMethodKey20 = new MethodKey(_classLoaderProxy.getClassName(),
-			"deleteItems", long.class, long.class);
-	private MethodKey _getCategoriesItemsCountMethodKey21 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getCategoriesItemsCount", long.class, java.util.List.class);
-	private MethodKey _getFeaturedItemsMethodKey22 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getFeaturedItems", long.class, long.class, int.class);
-	private MethodKey _getItemMethodKey23 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItem", long.class);
-	private MethodKey _getItemMethodKey24 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItem", long.class, java.lang.String.class);
-	private MethodKey _getItemByLargeImageIdMethodKey25 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItemByLargeImageId", long.class);
-	private MethodKey _getItemByMediumImageIdMethodKey26 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItemByMediumImageId", long.class);
-	private MethodKey _getItemBySmallImageIdMethodKey27 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItemBySmallImageId", long.class);
-	private MethodKey _getItemsMethodKey28 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItems", long.class, long.class);
-	private MethodKey _getItemsMethodKey29 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItems", long.class, long.class, int.class, int.class,
-			com.liferay.portal.kernel.util.OrderByComparator.class);
-	private MethodKey _getItemsCountMethodKey30 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItemsCount", long.class, long.class);
-	private MethodKey _getItemsPrevAndNextMethodKey31 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getItemsPrevAndNext", long.class,
-			com.liferay.portal.kernel.util.OrderByComparator.class);
-	private MethodKey _getSaleItemsMethodKey32 = new MethodKey(_classLoaderProxy.getClassName(),
-			"getSaleItems", long.class, long.class, int.class);
-	private MethodKey _searchMethodKey33 = new MethodKey(_classLoaderProxy.getClassName(),
-			"search", long.class, long[].class, java.lang.String.class,
-			int.class, int.class);
-	private MethodKey _searchCountMethodKey34 = new MethodKey(_classLoaderProxy.getClassName(),
-			"searchCount", long.class, long[].class, java.lang.String.class);
-	private MethodKey _updateItemMethodKey35 = new MethodKey(_classLoaderProxy.getClassName(),
-			"updateItem", long.class, long.class, long.class, long.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, java.lang.String.class,
-			java.lang.String.class, boolean.class, int.class, boolean.class,
-			java.lang.Boolean.class, boolean.class, java.lang.String.class,
-			java.io.File.class, boolean.class, java.lang.String.class,
-			java.io.File.class, boolean.class, java.lang.String.class,
-			java.io.File.class, java.util.List.class, java.util.List.class,
-			com.liferay.portal.service.ServiceContext.class);
+	private InvokableLocalService _invokableLocalService;
+	private String _methodName0;
+	private String[] _methodParameterTypes0;
+	private String _methodName1;
+	private String[] _methodParameterTypes1;
+	private String _methodName2;
+	private String[] _methodParameterTypes2;
+	private String _methodName3;
+	private String[] _methodParameterTypes3;
+	private String _methodName4;
+	private String[] _methodParameterTypes4;
+	private String _methodName5;
+	private String[] _methodParameterTypes5;
+	private String _methodName6;
+	private String[] _methodParameterTypes6;
+	private String _methodName7;
+	private String[] _methodParameterTypes7;
+	private String _methodName8;
+	private String[] _methodParameterTypes8;
+	private String _methodName9;
+	private String[] _methodParameterTypes9;
+	private String _methodName10;
+	private String[] _methodParameterTypes10;
+	private String _methodName11;
+	private String[] _methodParameterTypes11;
+	private String _methodName12;
+	private String[] _methodParameterTypes12;
+	private String _methodName13;
+	private String[] _methodParameterTypes13;
+	private String _methodName14;
+	private String[] _methodParameterTypes14;
+	private String _methodName15;
+	private String[] _methodParameterTypes15;
+	private String _methodName16;
+	private String[] _methodParameterTypes16;
+	private String _methodName17;
+	private String[] _methodParameterTypes17;
+	private String _methodName19;
+	private String[] _methodParameterTypes19;
+	private String _methodName20;
+	private String[] _methodParameterTypes20;
+	private String _methodName21;
+	private String[] _methodParameterTypes21;
+	private String _methodName22;
+	private String[] _methodParameterTypes22;
+	private String _methodName23;
+	private String[] _methodParameterTypes23;
+	private String _methodName24;
+	private String[] _methodParameterTypes24;
+	private String _methodName25;
+	private String[] _methodParameterTypes25;
+	private String _methodName26;
+	private String[] _methodParameterTypes26;
+	private String _methodName27;
+	private String[] _methodParameterTypes27;
+	private String _methodName28;
+	private String[] _methodParameterTypes28;
+	private String _methodName29;
+	private String[] _methodParameterTypes29;
+	private String _methodName30;
+	private String[] _methodParameterTypes30;
+	private String _methodName31;
+	private String[] _methodParameterTypes31;
+	private String _methodName32;
+	private String[] _methodParameterTypes32;
+	private String _methodName33;
+	private String[] _methodParameterTypes33;
+	private String _methodName34;
+	private String[] _methodParameterTypes34;
+	private String _methodName35;
+	private String[] _methodParameterTypes35;
+	private String _methodName36;
+	private String[] _methodParameterTypes36;
+	private String _methodName37;
+	private String[] _methodParameterTypes37;
+	private String _methodName38;
+	private String[] _methodParameterTypes38;
+	private String _methodName39;
+	private String[] _methodParameterTypes39;
+	private String _methodName40;
+	private String[] _methodParameterTypes40;
+	private String _methodName41;
+	private String[] _methodParameterTypes41;
 }

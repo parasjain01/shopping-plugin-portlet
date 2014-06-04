@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2011 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,7 +15,7 @@
 package com.liferay.shopping.service.persistence;
 
 import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.annotation.BeanReference;
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -31,9 +31,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
 import com.liferay.portal.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.service.persistence.BatchSessionUtil;
@@ -56,10 +59,6 @@ import java.util.List;
  * The persistence implementation for the shopping category service.
  *
  * <p>
- * Never modify or reference this class directly. Always use {@link ShoppingCategoryUtil} to access the shopping category persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
- * </p>
- *
- * <p>
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
@@ -70,65 +69,98 @@ import java.util.List;
  */
 public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<ShoppingCategory>
 	implements ShoppingCategoryPersistence {
+	/*
+	 * NOTE FOR DEVELOPERS:
+	 *
+	 * Never modify or reference this class directly. Always use {@link ShoppingCategoryUtil} to access the shopping category persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+	 */
 	public static final String FINDER_CLASS_NAME_ENTITY = ShoppingCategoryImpl.class.getName();
-	public static final String FINDER_CLASS_NAME_LIST = FINDER_CLASS_NAME_ENTITY +
-		".List";
-	public static final FinderPath FINDER_PATH_FIND_BY_GROUPID = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+	public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION = FINDER_CLASS_NAME_ENTITY +
+		".List1";
+	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION = FINDER_CLASS_NAME_ENTITY +
+		".List2";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
 			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
-			FINDER_CLASS_NAME_LIST, "findByGroupId",
+			ShoppingCategoryImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByGroupId",
 			new String[] {
 				Long.class.getName(),
 				
 			"java.lang.Integer", "java.lang.Integer",
 				"com.liferay.portal.kernel.util.OrderByComparator"
 			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID =
+		new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
+			ShoppingCategoryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
+			new String[] { Long.class.getName() },
+			ShoppingCategoryModelImpl.GROUPID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_GROUPID = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
-			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
-			FINDER_CLASS_NAME_LIST, "countByGroupId",
+			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
 			new String[] { Long.class.getName() });
-	public static final FinderPath FINDER_PATH_FIND_BY_G_P = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_P = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
 			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
-			FINDER_CLASS_NAME_LIST, "findByG_P",
+			ShoppingCategoryImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByG_P",
 			new String[] {
 				Long.class.getName(), Long.class.getName(),
 				
 			"java.lang.Integer", "java.lang.Integer",
 				"com.liferay.portal.kernel.util.OrderByComparator"
 			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
+			ShoppingCategoryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			ShoppingCategoryModelImpl.GROUPID_COLUMN_BITMASK |
+			ShoppingCategoryModelImpl.PARENTCATEGORYID_COLUMN_BITMASK);
 	public static final FinderPath FINDER_PATH_COUNT_BY_G_P = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
-			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
-			FINDER_CLASS_NAME_LIST, "countByG_P",
+			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P",
 			new String[] { Long.class.getName(), Long.class.getName() });
-	public static final FinderPath FINDER_PATH_FIND_ALL = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_ALL = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
 			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
-			FINDER_CLASS_NAME_LIST, "findAll", new String[0]);
+			ShoppingCategoryImpl.class, FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findAll", new String[0]);
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
+			ShoppingCategoryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll", new String[0]);
 	public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
-			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED,
-			FINDER_CLASS_NAME_LIST, "countAll", new String[0]);
+			ShoppingCategoryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
 
 	/**
 	 * Caches the shopping category in the entity cache if it is enabled.
 	 *
-	 * @param shoppingCategory the shopping category to cache
+	 * @param shoppingCategory the shopping category
 	 */
 	public void cacheResult(ShoppingCategory shoppingCategory) {
 		EntityCacheUtil.putResult(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
 			ShoppingCategoryImpl.class, shoppingCategory.getPrimaryKey(),
 			shoppingCategory);
+
+		shoppingCategory.resetOriginalValues();
 	}
 
 	/**
 	 * Caches the shopping categories in the entity cache if it is enabled.
 	 *
-	 * @param shoppingCategories the shopping categories to cache
+	 * @param shoppingCategories the shopping categories
 	 */
 	public void cacheResult(List<ShoppingCategory> shoppingCategories) {
 		for (ShoppingCategory shoppingCategory : shoppingCategories) {
 			if (EntityCacheUtil.getResult(
 						ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
 						ShoppingCategoryImpl.class,
-						shoppingCategory.getPrimaryKey(), this) == null) {
+						shoppingCategory.getPrimaryKey()) == null) {
 				cacheResult(shoppingCategory);
+			}
+			else {
+				shoppingCategory.resetOriginalValues();
 			}
 		}
 	}
@@ -140,11 +172,17 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
 	 * </p>
 	 */
+	@Override
 	public void clearCache() {
-		CacheRegistryUtil.clear(ShoppingCategoryImpl.class.getName());
+		if (_HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE) {
+			CacheRegistryUtil.clear(ShoppingCategoryImpl.class.getName());
+		}
+
 		EntityCacheUtil.clearCache(ShoppingCategoryImpl.class.getName());
+
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	/**
@@ -154,9 +192,24 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
 	 * </p>
 	 */
+	@Override
 	public void clearCache(ShoppingCategory shoppingCategory) {
 		EntityCacheUtil.removeResult(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
 			ShoppingCategoryImpl.class, shoppingCategory.getPrimaryKey());
+
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+	}
+
+	@Override
+	public void clearCache(List<ShoppingCategory> shoppingCategories) {
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		for (ShoppingCategory shoppingCategory : shoppingCategories) {
+			EntityCacheUtil.removeResult(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+				ShoppingCategoryImpl.class, shoppingCategory.getPrimaryKey());
+		}
 	}
 
 	/**
@@ -177,25 +230,26 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	/**
 	 * Removes the shopping category with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
-	 * @param primaryKey the primary key of the shopping category to remove
-	 * @return the shopping category that was removed
-	 * @throws com.liferay.portal.NoSuchModelException if a shopping category with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public ShoppingCategory remove(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return remove(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Removes the shopping category with the primary key from the database. Also notifies the appropriate model listeners.
-	 *
-	 * @param categoryId the primary key of the shopping category to remove
+	 * @param categoryId the primary key of the shopping category
 	 * @return the shopping category that was removed
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a shopping category with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public ShoppingCategory remove(long categoryId)
+		throws NoSuchCategoryException, SystemException {
+		return remove(Long.valueOf(categoryId));
+	}
+
+	/**
+	 * Removes the shopping category with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * @param primaryKey the primary key of the shopping category
+	 * @return the shopping category that was removed
+	 * @throws com.liferay.shopping.NoSuchCategoryException if a shopping category with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public ShoppingCategory remove(Serializable primaryKey)
 		throws NoSuchCategoryException, SystemException {
 		Session session = null;
 
@@ -203,15 +257,15 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			session = openSession();
 
 			ShoppingCategory shoppingCategory = (ShoppingCategory)session.get(ShoppingCategoryImpl.class,
-					new Long(categoryId));
+					primaryKey);
 
 			if (shoppingCategory == null) {
 				if (_log.isWarnEnabled()) {
-					_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + categoryId);
+					_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
 				throw new NoSuchCategoryException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-					categoryId);
+					primaryKey);
 			}
 
 			return remove(shoppingCategory);
@@ -227,6 +281,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		}
 	}
 
+	@Override
 	protected ShoppingCategory removeImpl(ShoppingCategory shoppingCategory)
 		throws SystemException {
 		shoppingCategory = toUnwrappedModel(shoppingCategory);
@@ -245,18 +300,20 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			closeSession(session);
 		}
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST);
-
-		EntityCacheUtil.removeResult(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
-			ShoppingCategoryImpl.class, shoppingCategory.getPrimaryKey());
+		clearCache(shoppingCategory);
 
 		return shoppingCategory;
 	}
 
+	@Override
 	public ShoppingCategory updateImpl(
 		com.liferay.shopping.model.ShoppingCategory shoppingCategory,
 		boolean merge) throws SystemException {
 		shoppingCategory = toUnwrappedModel(shoppingCategory);
+
+		boolean isNew = shoppingCategory.isNew();
+
+		ShoppingCategoryModelImpl shoppingCategoryModelImpl = (ShoppingCategoryModelImpl)shoppingCategory;
 
 		Session session = null;
 
@@ -274,7 +331,53 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			closeSession(session);
 		}
 
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+
+		if (isNew || !ShoppingCategoryModelImpl.COLUMN_BITMASK_ENABLED) {
+			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		}
+
+		else {
+			if ((shoppingCategoryModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						Long.valueOf(shoppingCategoryModelImpl.getOriginalGroupId())
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+					args);
+
+				args = new Object[] {
+						Long.valueOf(shoppingCategoryModelImpl.getGroupId())
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+					args);
+			}
+
+			if ((shoppingCategoryModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						Long.valueOf(shoppingCategoryModelImpl.getOriginalGroupId()),
+						Long.valueOf(shoppingCategoryModelImpl.getOriginalParentCategoryId())
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_P, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P,
+					args);
+
+				args = new Object[] {
+						Long.valueOf(shoppingCategoryModelImpl.getGroupId()),
+						Long.valueOf(shoppingCategoryModelImpl.getParentCategoryId())
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_P, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P,
+					args);
+			}
+		}
 
 		EntityCacheUtil.putResult(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
 			ShoppingCategoryImpl.class, shoppingCategory.getPrimaryKey(),
@@ -309,22 +412,23 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds the shopping category with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 * Returns the shopping category with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
 	 *
-	 * @param primaryKey the primary key of the shopping category to find
+	 * @param primaryKey the primary key of the shopping category
 	 * @return the shopping category
 	 * @throws com.liferay.portal.NoSuchModelException if a shopping category with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public ShoppingCategory findByPrimaryKey(Serializable primaryKey)
 		throws NoSuchModelException, SystemException {
 		return findByPrimaryKey(((Long)primaryKey).longValue());
 	}
 
 	/**
-	 * Finds the shopping category with the primary key or throws a {@link com.liferay.shopping.NoSuchCategoryException} if it could not be found.
+	 * Returns the shopping category with the primary key or throws a {@link com.liferay.shopping.NoSuchCategoryException} if it could not be found.
 	 *
-	 * @param categoryId the primary key of the shopping category to find
+	 * @param categoryId the primary key of the shopping category
 	 * @return the shopping category
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a shopping category with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
@@ -346,44 +450,58 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds the shopping category with the primary key or returns <code>null</code> if it could not be found.
+	 * Returns the shopping category with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param primaryKey the primary key of the shopping category to find
+	 * @param primaryKey the primary key of the shopping category
 	 * @return the shopping category, or <code>null</code> if a shopping category with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public ShoppingCategory fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
 		return fetchByPrimaryKey(((Long)primaryKey).longValue());
 	}
 
 	/**
-	 * Finds the shopping category with the primary key or returns <code>null</code> if it could not be found.
+	 * Returns the shopping category with the primary key or returns <code>null</code> if it could not be found.
 	 *
-	 * @param categoryId the primary key of the shopping category to find
+	 * @param categoryId the primary key of the shopping category
 	 * @return the shopping category, or <code>null</code> if a shopping category with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	public ShoppingCategory fetchByPrimaryKey(long categoryId)
 		throws SystemException {
 		ShoppingCategory shoppingCategory = (ShoppingCategory)EntityCacheUtil.getResult(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
-				ShoppingCategoryImpl.class, categoryId, this);
+				ShoppingCategoryImpl.class, categoryId);
+
+		if (shoppingCategory == _nullShoppingCategory) {
+			return null;
+		}
 
 		if (shoppingCategory == null) {
 			Session session = null;
+
+			boolean hasException = false;
 
 			try {
 				session = openSession();
 
 				shoppingCategory = (ShoppingCategory)session.get(ShoppingCategoryImpl.class,
-						new Long(categoryId));
+						Long.valueOf(categoryId));
 			}
 			catch (Exception e) {
+				hasException = true;
+
 				throw processException(e);
 			}
 			finally {
 				if (shoppingCategory != null) {
 					cacheResult(shoppingCategory);
+				}
+				else if (!hasException) {
+					EntityCacheUtil.putResult(ShoppingCategoryModelImpl.ENTITY_CACHE_ENABLED,
+						ShoppingCategoryImpl.class, categoryId,
+						_nullShoppingCategory);
 				}
 
 				closeSession(session);
@@ -394,9 +512,9 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds all the shopping categories where groupId = &#63;.
+	 * Returns all the shopping categories where groupId = &#63;.
 	 *
-	 * @param groupId the group id to search with
+	 * @param groupId the group ID
 	 * @return the matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -406,15 +524,15 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds a range of all the shopping categories where groupId = &#63;.
+	 * Returns a range of all the shopping categories where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
 	 * @return the range of matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -424,30 +542,46 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds an ordered range of all the shopping categories where groupId = &#63;.
+	 * Returns an ordered range of all the shopping categories where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
-	 * @param orderByComparator the comparator to order the results by
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<ShoppingCategory> findByGroupId(long groupId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
-		Object[] finderArgs = new Object[] {
-				groupId,
-				
-				String.valueOf(start), String.valueOf(end),
-				String.valueOf(orderByComparator)
-			};
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
 
-		List<ShoppingCategory> list = (List<ShoppingCategory>)FinderCacheUtil.getResult(FINDER_PATH_FIND_BY_GROUPID,
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID;
+			finderArgs = new Object[] { groupId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID;
+			finderArgs = new Object[] { groupId, start, end, orderByComparator };
+		}
+
+		List<ShoppingCategory> list = (List<ShoppingCategory>)FinderCacheUtil.getResult(finderPath,
 				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (ShoppingCategory shoppingCategory : list) {
+				if ((groupId != shoppingCategory.getGroupId())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
 
 		if (list == null) {
 			StringBundler query = null;
@@ -494,14 +628,12 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			}
 			finally {
 				if (list == null) {
-					FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_GROUPID,
-						finderArgs);
+					FinderCacheUtil.removeResult(finderPath, finderArgs);
 				}
 				else {
 					cacheResult(list);
 
-					FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPID,
-						finderArgs, list);
+					FinderCacheUtil.putResult(finderPath, finderArgs, list);
 				}
 
 				closeSession(session);
@@ -512,14 +644,10 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds the first shopping category in the ordered set where groupId = &#63;.
+	 * Returns the first shopping category in the ordered set where groupId = &#63;.
 	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param groupId the group id to search with
-	 * @param orderByComparator the comparator to order the set by
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shopping category
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a matching shopping category could not be found
 	 * @throws SystemException if a system exception occurred
@@ -527,35 +655,50 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	public ShoppingCategory findByGroupId_First(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCategoryException, SystemException {
-		List<ShoppingCategory> list = findByGroupId(groupId, 0, 1,
+		ShoppingCategory shoppingCategory = fetchByGroupId_First(groupId,
 				orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(4);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchCategoryException(msg.toString());
+		if (shoppingCategory != null) {
+			return shoppingCategory;
 		}
-		else {
-			return list.get(0);
-		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchCategoryException(msg.toString());
 	}
 
 	/**
-	 * Finds the last shopping category in the ordered set where groupId = &#63;.
+	 * Returns the first shopping category in the ordered set where groupId = &#63;.
 	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching shopping category, or <code>null</code> if a matching shopping category could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public ShoppingCategory fetchByGroupId_First(long groupId,
+		OrderByComparator orderByComparator) throws SystemException {
+		List<ShoppingCategory> list = findByGroupId(groupId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last shopping category in the ordered set where groupId = &#63;.
 	 *
-	 * @param groupId the group id to search with
-	 * @param orderByComparator the comparator to order the set by
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shopping category
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a matching shopping category could not be found
 	 * @throws SystemException if a system exception occurred
@@ -563,38 +706,53 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	public ShoppingCategory findByGroupId_Last(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCategoryException, SystemException {
+		ShoppingCategory shoppingCategory = fetchByGroupId_Last(groupId,
+				orderByComparator);
+
+		if (shoppingCategory != null) {
+			return shoppingCategory;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchCategoryException(msg.toString());
+	}
+
+	/**
+	 * Returns the last shopping category in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching shopping category, or <code>null</code> if a matching shopping category could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public ShoppingCategory fetchByGroupId_Last(long groupId,
+		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByGroupId(groupId);
 
 		List<ShoppingCategory> list = findByGroupId(groupId, count - 1, count,
 				orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(4);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchCategoryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
-	 * Finds the shopping categories before and after the current shopping category in the ordered set where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
+	 * Returns the shopping categories before and after the current shopping category in the ordered set where groupId = &#63;.
 	 *
 	 * @param categoryId the primary key of the current shopping category
-	 * @param groupId the group id to search with
-	 * @param orderByComparator the comparator to order the set by
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next shopping category
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a shopping category with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
@@ -647,17 +805,17 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
 		if (orderByComparator != null) {
-			String[] orderByFields = orderByComparator.getOrderByFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
-			if (orderByFields.length > 0) {
+			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
 			}
 
-			for (int i = 0; i < orderByFields.length; i++) {
+			for (int i = 0; i < orderByConditionFields.length; i++) {
 				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
+				query.append(orderByConditionFields[i]);
 
-				if ((i + 1) < orderByFields.length) {
+				if ((i + 1) < orderByConditionFields.length) {
 					if (orderByComparator.isAscending() ^ previous) {
 						query.append(WHERE_GREATER_THAN_HAS_NEXT);
 					}
@@ -676,6 +834,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			}
 
 			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
 
 			for (int i = 0; i < orderByFields.length; i++) {
 				query.append(_ORDER_BY_ENTITY_ALIAS);
@@ -716,7 +876,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		qPos.add(groupId);
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByValues(shoppingCategory);
+			Object[] values = orderByComparator.getOrderByConditionValues(shoppingCategory);
 
 			for (Object value : values) {
 				qPos.add(value);
@@ -734,9 +894,9 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and finds all the shopping categories where groupId = &#63;.
+	 * Returns all the shopping categories that the user has permission to view where groupId = &#63;.
 	 *
-	 * @param groupId the group id to search with
+	 * @param groupId the group ID
 	 * @return the matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -747,15 +907,15 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and finds a range of all the shopping categories where groupId = &#63;.
+	 * Returns a range of all the shopping categories that the user has permission to view where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
 	 * @return the range of matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -765,16 +925,16 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and finds an ordered range of all the shopping categories where groupId = &#63;.
+	 * Returns an ordered range of all the shopping categories that the user has permissions to view where groupId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
-	 * @param orderByComparator the comparator to order the results by
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -828,8 +988,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(), _FILTER_COLUMN_PK,
-				_FILTER_COLUMN_USERID, groupId);
+				ShoppingCategory.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -861,10 +1021,196 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns the shopping categories before and after the current shopping category in the ordered set of shopping categories that the user has permission to view where groupId = &#63;.
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
+	 * @param categoryId the primary key of the current shopping category
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next shopping category
+	 * @throws com.liferay.shopping.NoSuchCategoryException if a shopping category with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public ShoppingCategory[] filterFindByGroupId_PrevAndNext(long categoryId,
+		long groupId, OrderByComparator orderByComparator)
+		throws NoSuchCategoryException, SystemException {
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByGroupId_PrevAndNext(categoryId, groupId,
+				orderByComparator);
+		}
+
+		ShoppingCategory shoppingCategory = findByPrimaryKey(categoryId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ShoppingCategory[] array = new ShoppingCategoryImpl[3];
+
+			array[0] = filterGetByGroupId_PrevAndNext(session,
+					shoppingCategory, groupId, orderByComparator, true);
+
+			array[1] = shoppingCategory;
+
+			array[2] = filterGetByGroupId_PrevAndNext(session,
+					shoppingCategory, groupId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ShoppingCategory filterGetByGroupId_PrevAndNext(Session session,
+		ShoppingCategory shoppingCategory, long groupId,
+		OrderByComparator orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_WHERE);
+		}
+		else {
+			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					query.append(_ORDER_BY_ENTITY_ALIAS);
+				}
+				else {
+					query.append(_ORDER_BY_ENTITY_TABLE);
+				}
+
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					query.append(_ORDER_BY_ENTITY_ALIAS);
+				}
+				else {
+					query.append(_ORDER_BY_ENTITY_TABLE);
+				}
+
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				query.append(ShoppingCategoryModelImpl.ORDER_BY_JPQL);
+			}
+			else {
+				query.append(ShoppingCategoryModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
+				ShoppingCategory.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+
+		SQLQuery q = session.createSQLQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			q.addEntity(_FILTER_ENTITY_ALIAS, ShoppingCategoryImpl.class);
+		}
+		else {
+			q.addEntity(_FILTER_ENTITY_TABLE, ShoppingCategoryImpl.class);
+		}
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(shoppingCategory);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ShoppingCategory> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
 	 * @return the matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -875,16 +1221,16 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds a range of all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns a range of all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
 	 * @return the range of matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -894,32 +1240,53 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds an ordered range of all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns an ordered range of all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
-	 * @param orderByComparator the comparator to order the results by
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<ShoppingCategory> findByG_P(long groupId,
 		long parentCategoryId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
-		Object[] finderArgs = new Object[] {
-				groupId, parentCategoryId,
-				
-				String.valueOf(start), String.valueOf(end),
-				String.valueOf(orderByComparator)
-			};
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
 
-		List<ShoppingCategory> list = (List<ShoppingCategory>)FinderCacheUtil.getResult(FINDER_PATH_FIND_BY_G_P,
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_P;
+			finderArgs = new Object[] { groupId, parentCategoryId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_P;
+			finderArgs = new Object[] {
+					groupId, parentCategoryId,
+					
+					start, end, orderByComparator
+				};
+		}
+
+		List<ShoppingCategory> list = (List<ShoppingCategory>)FinderCacheUtil.getResult(finderPath,
 				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (ShoppingCategory shoppingCategory : list) {
+				if ((groupId != shoppingCategory.getGroupId()) ||
+						(parentCategoryId != shoppingCategory.getParentCategoryId())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
 
 		if (list == null) {
 			StringBundler query = null;
@@ -970,14 +1337,12 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			}
 			finally {
 				if (list == null) {
-					FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_G_P,
-						finderArgs);
+					FinderCacheUtil.removeResult(finderPath, finderArgs);
 				}
 				else {
 					cacheResult(list);
 
-					FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_G_P,
-						finderArgs, list);
+					FinderCacheUtil.putResult(finderPath, finderArgs, list);
 				}
 
 				closeSession(session);
@@ -988,15 +1353,11 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds the first shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns the first shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
 	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
-	 * @param orderByComparator the comparator to order the set by
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching shopping category
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a matching shopping category could not be found
 	 * @throws SystemException if a system exception occurred
@@ -1004,39 +1365,56 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	public ShoppingCategory findByG_P_First(long groupId,
 		long parentCategoryId, OrderByComparator orderByComparator)
 		throws NoSuchCategoryException, SystemException {
-		List<ShoppingCategory> list = findByG_P(groupId, parentCategoryId, 0,
-				1, orderByComparator);
+		ShoppingCategory shoppingCategory = fetchByG_P_First(groupId,
+				parentCategoryId, orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(6);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(", parentCategoryId=");
-			msg.append(parentCategoryId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchCategoryException(msg.toString());
+		if (shoppingCategory != null) {
+			return shoppingCategory;
 		}
-		else {
-			return list.get(0);
-		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", parentCategoryId=");
+		msg.append(parentCategoryId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchCategoryException(msg.toString());
 	}
 
 	/**
-	 * Finds the last shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns the first shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
 	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching shopping category, or <code>null</code> if a matching shopping category could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public ShoppingCategory fetchByG_P_First(long groupId,
+		long parentCategoryId, OrderByComparator orderByComparator)
+		throws SystemException {
+		List<ShoppingCategory> list = findByG_P(groupId, parentCategoryId, 0,
+				1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
-	 * @param orderByComparator the comparator to order the set by
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching shopping category
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a matching shopping category could not be found
 	 * @throws SystemException if a system exception occurred
@@ -1044,42 +1422,59 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	public ShoppingCategory findByG_P_Last(long groupId, long parentCategoryId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCategoryException, SystemException {
+		ShoppingCategory shoppingCategory = fetchByG_P_Last(groupId,
+				parentCategoryId, orderByComparator);
+
+		if (shoppingCategory != null) {
+			return shoppingCategory;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", parentCategoryId=");
+		msg.append(parentCategoryId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchCategoryException(msg.toString());
+	}
+
+	/**
+	 * Returns the last shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching shopping category, or <code>null</code> if a matching shopping category could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public ShoppingCategory fetchByG_P_Last(long groupId,
+		long parentCategoryId, OrderByComparator orderByComparator)
+		throws SystemException {
 		int count = countByG_P(groupId, parentCategoryId);
 
 		List<ShoppingCategory> list = findByG_P(groupId, parentCategoryId,
 				count - 1, count, orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(6);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(", parentCategoryId=");
-			msg.append(parentCategoryId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchCategoryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
-	 * Finds the shopping categories before and after the current shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
+	 * Returns the shopping categories before and after the current shopping category in the ordered set where groupId = &#63; and parentCategoryId = &#63;.
 	 *
 	 * @param categoryId the primary key of the current shopping category
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
-	 * @param orderByComparator the comparator to order the set by
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next shopping category
 	 * @throws com.liferay.shopping.NoSuchCategoryException if a shopping category with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
@@ -1134,17 +1529,17 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
 		if (orderByComparator != null) {
-			String[] orderByFields = orderByComparator.getOrderByFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
-			if (orderByFields.length > 0) {
+			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
 			}
 
-			for (int i = 0; i < orderByFields.length; i++) {
+			for (int i = 0; i < orderByConditionFields.length; i++) {
 				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
+				query.append(orderByConditionFields[i]);
 
-				if ((i + 1) < orderByFields.length) {
+				if ((i + 1) < orderByConditionFields.length) {
 					if (orderByComparator.isAscending() ^ previous) {
 						query.append(WHERE_GREATER_THAN_HAS_NEXT);
 					}
@@ -1163,6 +1558,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			}
 
 			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
 
 			for (int i = 0; i < orderByFields.length; i++) {
 				query.append(_ORDER_BY_ENTITY_ALIAS);
@@ -1205,7 +1602,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		qPos.add(parentCategoryId);
 
 		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByValues(shoppingCategory);
+			Object[] values = orderByComparator.getOrderByConditionValues(shoppingCategory);
 
 			for (Object value : values) {
 				qPos.add(value);
@@ -1223,10 +1620,10 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and finds all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns all the shopping categories that the user has permission to view where groupId = &#63; and parentCategoryId = &#63;.
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
 	 * @return the matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1237,16 +1634,16 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and finds a range of all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns a range of all the shopping categories that the user has permission to view where groupId = &#63; and parentCategoryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
 	 * @return the range of matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1256,17 +1653,17 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and finds an ordered range of all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns an ordered range of all the shopping categories that the user has permissions to view where groupId = &#63; and parentCategoryId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
-	 * @param orderByComparator the comparator to order the results by
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1324,8 +1721,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(), _FILTER_COLUMN_PK,
-				_FILTER_COLUMN_USERID, groupId);
+				ShoppingCategory.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -1359,7 +1756,198 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds all the shopping categories.
+	 * Returns the shopping categories before and after the current shopping category in the ordered set of shopping categories that the user has permission to view where groupId = &#63; and parentCategoryId = &#63;.
+	 *
+	 * @param categoryId the primary key of the current shopping category
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next shopping category
+	 * @throws com.liferay.shopping.NoSuchCategoryException if a shopping category with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	public ShoppingCategory[] filterFindByG_P_PrevAndNext(long categoryId,
+		long groupId, long parentCategoryId, OrderByComparator orderByComparator)
+		throws NoSuchCategoryException, SystemException {
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByG_P_PrevAndNext(categoryId, groupId, parentCategoryId,
+				orderByComparator);
+		}
+
+		ShoppingCategory shoppingCategory = findByPrimaryKey(categoryId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ShoppingCategory[] array = new ShoppingCategoryImpl[3];
+
+			array[0] = filterGetByG_P_PrevAndNext(session, shoppingCategory,
+					groupId, parentCategoryId, orderByComparator, true);
+
+			array[1] = shoppingCategory;
+
+			array[2] = filterGetByG_P_PrevAndNext(session, shoppingCategory,
+					groupId, parentCategoryId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ShoppingCategory filterGetByG_P_PrevAndNext(Session session,
+		ShoppingCategory shoppingCategory, long groupId, long parentCategoryId,
+		OrderByComparator orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_WHERE);
+		}
+		else {
+			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		query.append(_FINDER_COLUMN_G_P_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					query.append(_ORDER_BY_ENTITY_ALIAS);
+				}
+				else {
+					query.append(_ORDER_BY_ENTITY_TABLE);
+				}
+
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					query.append(_ORDER_BY_ENTITY_ALIAS);
+				}
+				else {
+					query.append(_ORDER_BY_ENTITY_TABLE);
+				}
+
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				query.append(ShoppingCategoryModelImpl.ORDER_BY_JPQL);
+			}
+			else {
+				query.append(ShoppingCategoryModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
+				ShoppingCategory.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+
+		SQLQuery q = session.createSQLQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			q.addEntity(_FILTER_ENTITY_ALIAS, ShoppingCategoryImpl.class);
+		}
+		else {
+			q.addEntity(_FILTER_ENTITY_TABLE, ShoppingCategoryImpl.class);
+		}
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		qPos.add(parentCategoryId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(shoppingCategory);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<ShoppingCategory> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the shopping categories.
 	 *
 	 * @return the shopping categories
 	 * @throws SystemException if a system exception occurred
@@ -1369,14 +1957,14 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds a range of all the shopping categories.
+	 * Returns a range of all the shopping categories.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
 	 * @return the range of shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1386,26 +1974,34 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Finds an ordered range of all the shopping categories.
+	 * Returns an ordered range of all the shopping categories.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
 	 * </p>
 	 *
-	 * @param start the lower bound of the range of shopping categories to return
-	 * @param end the upper bound of the range of shopping categories to return (not inclusive)
-	 * @param orderByComparator the comparator to order the results by
+	 * @param start the lower bound of the range of shopping categories
+	 * @param end the upper bound of the range of shopping categories (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
 	public List<ShoppingCategory> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
-		Object[] finderArgs = new Object[] {
-				String.valueOf(start), String.valueOf(end),
-				String.valueOf(orderByComparator)
-			};
+		FinderPath finderPath = null;
+		Object[] finderArgs = new Object[] { start, end, orderByComparator };
 
-		List<ShoppingCategory> list = (List<ShoppingCategory>)FinderCacheUtil.getResult(FINDER_PATH_FIND_ALL,
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL;
+			finderArgs = FINDER_ARGS_EMPTY;
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_ALL;
+			finderArgs = new Object[] { start, end, orderByComparator };
+		}
+
+		List<ShoppingCategory> list = (List<ShoppingCategory>)FinderCacheUtil.getResult(finderPath,
 				finderArgs, this);
 
 		if (list == null) {
@@ -1450,14 +2046,12 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 			}
 			finally {
 				if (list == null) {
-					FinderCacheUtil.removeResult(FINDER_PATH_FIND_ALL,
-						finderArgs);
+					FinderCacheUtil.removeResult(finderPath, finderArgs);
 				}
 				else {
 					cacheResult(list);
 
-					FinderCacheUtil.putResult(FINDER_PATH_FIND_ALL, finderArgs,
-						list);
+					FinderCacheUtil.putResult(finderPath, finderArgs, list);
 				}
 
 				closeSession(session);
@@ -1470,7 +2064,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	/**
 	 * Removes all the shopping categories where groupId = &#63; from the database.
 	 *
-	 * @param groupId the group id to search with
+	 * @param groupId the group ID
 	 * @throws SystemException if a system exception occurred
 	 */
 	public void removeByGroupId(long groupId) throws SystemException {
@@ -1482,8 +2076,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	/**
 	 * Removes all the shopping categories where groupId = &#63; and parentCategoryId = &#63; from the database.
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
 	 * @throws SystemException if a system exception occurred
 	 */
 	public void removeByG_P(long groupId, long parentCategoryId)
@@ -1506,9 +2100,9 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Counts all the shopping categories where groupId = &#63;.
+	 * Returns the number of shopping categories where groupId = &#63;.
 	 *
-	 * @param groupId the group id to search with
+	 * @param groupId the group ID
 	 * @return the number of matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1559,9 +2153,9 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and counts all the shopping categories where groupId = &#63;.
+	 * Returns the number of shopping categories that the user has permission to view where groupId = &#63;.
 	 *
-	 * @param groupId the group id to search with
+	 * @param groupId the group ID
 	 * @return the number of matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1577,8 +2171,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(), _FILTER_COLUMN_PK,
-				_FILTER_COLUMN_USERID, groupId);
+				ShoppingCategory.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -1607,10 +2201,10 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Counts all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns the number of shopping categories where groupId = &#63; and parentCategoryId = &#63;.
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
 	 * @return the number of matching shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1666,10 +2260,10 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Filters by the user's permissions and counts all the shopping categories where groupId = &#63; and parentCategoryId = &#63;.
+	 * Returns the number of shopping categories that the user has permission to view where groupId = &#63; and parentCategoryId = &#63;.
 	 *
-	 * @param groupId the group id to search with
-	 * @param parentCategoryId the parent category id to search with
+	 * @param groupId the group ID
+	 * @param parentCategoryId the parent category ID
 	 * @return the number of matching shopping categories that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
@@ -1688,8 +2282,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(), _FILTER_COLUMN_PK,
-				_FILTER_COLUMN_USERID, groupId);
+				ShoppingCategory.class.getName(),
+				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
 
 		Session session = null;
 
@@ -1720,16 +2314,14 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	}
 
 	/**
-	 * Counts all the shopping categories.
+	 * Returns the number of shopping categories.
 	 *
 	 * @return the number of shopping categories
 	 * @throws SystemException if a system exception occurred
 	 */
 	public int countAll() throws SystemException {
-		Object[] finderArgs = new Object[0];
-
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
-				finderArgs, this);
+				FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
 			Session session = null;
@@ -1749,8 +2341,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 					count = Long.valueOf(0);
 				}
 
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL, finderArgs,
-					count);
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
+					FINDER_ARGS_EMPTY, count);
 
 				closeSession(session);
 			}
@@ -1772,8 +2364,10 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 				List<ModelListener<ShoppingCategory>> listenersList = new ArrayList<ModelListener<ShoppingCategory>>();
 
 				for (String listenerClassName : listenerClassNames) {
+					Class<?> clazz = getClass();
+
 					listenersList.add((ModelListener<ShoppingCategory>)InstanceFactory.newInstance(
-							listenerClassName));
+							clazz.getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -1787,7 +2381,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	public void destroy() {
 		EntityCacheUtil.removeCache(ShoppingCategoryImpl.class.getName());
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST);
+		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
 	@BeanReference(type = ShoppingCartPersistence.class)
@@ -1817,19 +2411,37 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 = "shoppingCategory.groupId = ?";
 	private static final String _FINDER_COLUMN_G_P_GROUPID_2 = "shoppingCategory.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_P_PARENTCATEGORYID_2 = "shoppingCategory.parentCategoryId = ?";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "shoppingCategory.categoryId";
 	private static final String _FILTER_SQL_SELECT_SHOPPINGCATEGORY_WHERE = "SELECT DISTINCT {shoppingCategory.*} FROM Shopping_ShoppingCategory shoppingCategory WHERE ";
 	private static final String _FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {Shopping_ShoppingCategory.*} FROM (SELECT DISTINCT shoppingCategory.categoryId FROM Shopping_ShoppingCategory shoppingCategory WHERE ";
 	private static final String _FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_2 =
 		") TEMP_TABLE INNER JOIN Shopping_ShoppingCategory ON TEMP_TABLE.categoryId = Shopping_ShoppingCategory.categoryId";
 	private static final String _FILTER_SQL_COUNT_SHOPPINGCATEGORY_WHERE = "SELECT COUNT(DISTINCT shoppingCategory.categoryId) AS COUNT_VALUE FROM Shopping_ShoppingCategory shoppingCategory WHERE ";
-	private static final String _FILTER_COLUMN_PK = "shoppingCategory.categoryId";
-	private static final String _FILTER_COLUMN_USERID = "shoppingCategory.userId";
 	private static final String _FILTER_ENTITY_ALIAS = "shoppingCategory";
 	private static final String _FILTER_ENTITY_TABLE = "Shopping_ShoppingCategory";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "shoppingCategory.";
 	private static final String _ORDER_BY_ENTITY_TABLE = "Shopping_ShoppingCategory.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ShoppingCategory exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ShoppingCategory exists with the key {";
+	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
+				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(ShoppingCategoryPersistenceImpl.class);
+	private static ShoppingCategory _nullShoppingCategory = new ShoppingCategoryImpl() {
+			@Override
+			public Object clone() {
+				return this;
+			}
+
+			@Override
+			public CacheModel<ShoppingCategory> toCacheModel() {
+				return _nullShoppingCategoryCacheModel;
+			}
+		};
+
+	private static CacheModel<ShoppingCategory> _nullShoppingCategoryCacheModel = new CacheModel<ShoppingCategory>() {
+			public ShoppingCategory toEntityModel() {
+				return _nullShoppingCategory;
+			}
+		};
 }
